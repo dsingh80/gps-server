@@ -1,0 +1,35 @@
+{
+  "name": "server-template",
+  "private": true,
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=12.13.1"
+  },
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start:dev": "NODE_ENV=development nodemon --ignore sessions/ ./server.js",
+    "start:prod": "NODE_ENV=production nodemon --ignore sessions/ ./server.js",
+    "start:pm2": "NODE_ENV=production pm2 start ./server.js"
+  },
+  "author": "Damanveer Singh",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "1.18.3",
+    "colors": "1.3.3",
+    "connect-mongodb-session": "2.2.0",
+    "cookie-parser": "1.4.3",
+    "express": "4.16.4",
+    "express-session": "1.15.6",
+    "helmet": "^3.21.2",
+    "mongoose": "5.7.12",
+    "mongoose-paginate": "5.0.3",
+    "morgan": "1.9.1",
+    "uuid": "3.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.10.0",
+    "eslint-plugin-node": "^8.0.0",
+    "nodemon": "^1.19.4"
+  }
+}
