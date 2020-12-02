@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  server: # This can be any name you want
+    build: . # Use the Dockerfile from this directory to build this service
+    depends_on:
+      - mongo # looks for a service defined in this compose file, with the exact name defined here (case-sensitive)
+    ports:
+      - "8080:8080" # TODO: Map to the port that our app is listening on
+                    # Map local port 8080 to container port 8080
+                    # Without this mapping, there is no way to connect to the container from our local network
+    volumes:
+      - server_logs:/var/logs/server
+    restart: on-failure
+
+
+  mongo: # Whenever you need to connect to Mongodb from inside the container, make sure the IP host is the EXACT same as this
+    # Ex: const connection = "mongodb://mongo:27017/mydb"; (instead of localhost:27017,
+    # we say "mongo:27017" because the name of the service is defined as "mongo" here (case-sensitive)
+    # command: ['mongod', '--auth'] # TODO: enable authentication, do this after the database has been initialized once
+    image: mongo:4.4.2-bionic
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./config/init_db_scripts:/docker-entrypoint-initdb.d
+      - ./config/mongod.conf:/etc/mongod.conf  # configure mongodb through a local config file
+      - mongo_storage:/data/db  # allow mongodb to store data outside of the container so the data persists across container restarts
+                                # by default, mongodb will read data from /data/db (inside the container)
+                                # on our local machine, this will stored in whichever directory the path before the ":" points to
+    restart: always
+
+
+volumes:
+  mongo_storage:
+  server_logs:

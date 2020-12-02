@@ -4,7 +4,7 @@ const MongoDB = require('mongoose'),
   UsersCollection = require('./UsersCollection');
 
 const config = require('../../config/services.js');
-let _services = null;
+let _services;
 if (process.env.NODE_ENV == 'development') _services = config.development;
 else _services = config.production;
 
@@ -22,7 +22,8 @@ class Database {
 
     this.__connectOptions = {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      dbName: dbServices.dbName
     };
 
     this.__dbServices = dbServices;
@@ -39,9 +40,12 @@ class Database {
   async connectAll() {
     try {
       if (this.__UsersCollection == null) {
-        await this.__connect(this.__dbServices.Users.uri);
-        this.__UsersCollection = new UsersCollection();
-        console.info('Connected to UsersCollection!');
+        this.__connect(this.__dbServices.Users.uri)
+            .then((connection) => {
+              this.__UsersCollection = new UsersCollection(connection);
+              console.info('Connected to UsersCollection!');
+            })
+            .catch(console.error);
       }
     }
     catch (err) {
@@ -61,8 +65,8 @@ class Database {
    * This is internal-use-only because we want the Database to make all connections once at initialization.
    * No one else should be calling this method or they'd break encapsulation and have access to MongoDB <Connection> directly
    */
-  async __connect(uri) {
-    return MongoDB.connect(uri, this.__connectOptions);
+  __connect(uri) {
+    return MongoDB.createConnection(uri, this.__connectOptions);
   }
 
 
@@ -82,7 +86,7 @@ class Database {
    * @method users
    * @description Alias for getUsersCollection
    */
-  users() {
+  get users() {
     return this.getUsersCollection();
   }
 

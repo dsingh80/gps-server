@@ -3,14 +3,19 @@
   "private": true,
   "version": "1.0.0",
   "engines": {
-    "node": ">=12.13.1"
+    "node": ">=14.15.1"
   },
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start:dev": "NODE_ENV=development nodemon --ignore sessions/ ./server.js",
-    "start:prod": "NODE_ENV=production nodemon --ignore sessions/ ./server.js",
-    "start:pm2": "NODE_ENV=production pm2 start ./server.js"
+    "build": "docker-compose build",
+    "start": "npm run start:dev",
+    "start:dev": "NODE_ENV=development node ./server.js",
+    "start:prod": "NODE_ENV=production node ./server.js",
+    "start:pm2": "NODE_ENV=production pm2 start ./server.js",
+    "docker": "npm run build && npm run docker:mongo && npm run docker:server",
+    "docker:server": "docker-compose up server",
+    "docker:mongo": "docker-compose up -d mongo"
   },
   "author": "Damanveer Singh",
   "license": "ISC",
@@ -22,7 +27,7 @@
     "express": "4.16.4",
     "express-session": "1.15.6",
     "helmet": "^3.21.2",
-    "mongoose": "5.7.12",
+    "mongoose": "5.11.1",
     "mongoose-paginate": "5.0.3",
     "morgan": "1.9.1",
     "uuid": "3.3.2"

@@ -1,5 +1,6 @@
 # Logs #
 ########
+logs/
 *.log
 
 # Build #
@@ -8,17 +9,6 @@
 /dist/
 sessions
 
-# Config #
-##########
-# config            # TODO: THIS LINE SHOULD BE UNCOMMENTED DURING DEVELOPMENT
-                    # Only kept here so the format of the config folder/files is apparent
-
-# Certificates #
-################
-#*.crt
-#*.key
-#*.pem
-
 # System #
 ################
 .DS_Store
@@ -26,8 +16,6 @@ sessions
 # Temp #
 ################
 /tmp
-/*.lock
-*-lock.json
 
 # Node Modules #
 ################
@@ -53,6 +41,7 @@ sessions
 .idea/uiDesigner.xml
 
 .idea
-
+.git
+.gitignore
 
 dump.rdb

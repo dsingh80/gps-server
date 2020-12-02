@@ -1,7 +1,7 @@
 'use strict';
 
 const Collection = require('./Collection'),
-  User = require('../schemas/user');
+  UserSchema = require('../schemas/user');
 
 /**
  * @class UsersCollection
@@ -12,8 +12,10 @@ const Collection = require('./Collection'),
  */
 class UsersCollection extends Collection {
 
-  constructor() {
+  constructor(connection) {
+    if(!connection) { throw 'Attempt to initialize a UsersCollection without a mongoose connection object'; }
     super();
+    this.User = connection.model('User', UserSchema);
   }
 
 
@@ -46,7 +48,7 @@ UsersCollection.prototype.__authenticate = async function(self, username, passwo
   let select = {};
   let options = {};
 
-  User.findOne(query, select, options)
+  this.User.findOne(query, select, options)
     .exec((err, data) => {
       if (callback) {
         if (err) { return callback(err); }

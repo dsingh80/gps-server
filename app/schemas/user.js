@@ -15,7 +15,6 @@ let UserSchema = mongoose.Schema({
 });
 
 UserSchema.plugin(paginate);
-let User = mongoose.model('User', UserSchema);
 
 
-module.exports = User;
+module.exports = UserSchema;

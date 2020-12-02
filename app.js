@@ -1,6 +1,6 @@
 /**
- * @file
- * app.js
+ * @file app.js
+ * @fileOverview
  * Stores the first point of contact server logic
  * This file handles initializing connections, handling uncaught exceptions, and properly shutting the server down
  */
@@ -31,6 +31,13 @@ if (process.env.NODE_ENV == 'development') _services = config.development;
 else _services = config.production;
 
 
+const sessionStore = new MongoSessionStore(_services.mongodb.Sessions);
+sessionStore.on('connected', function() {
+  console.assert('Connected to Session store!');
+});
+sessionStore.on('error', function(err) {
+  console.error(err);
+});
 // Set app constants
 app.set('development', _services.server.development);
 app.set('port', _services.server.port);
@@ -42,7 +49,7 @@ app.set('port', _services.server.port);
  * =====================================================
  */
 app.set('trust proxy', true);    // Handles reverse proxy case for logging remote address
-const accessLogStream = fs.createWriteStream('logs/access.log', { flags: 'a' });
+const accessLogStream = fs.createWriteStream(path.resolve(_services.server.log_path, 'server.access.log'), { flags: 'a' });
 const loggerFormat = '[:date[iso]][:level][:status :status-message] ":method :url" - :remote-addr - :response-time ms';
 const loggerOptions = {
   stream: accessLogStream
@@ -54,10 +61,10 @@ logger.token('level', function getLogLevel(req, res) {
 logger.token('status-message', function getStatusMessage(req, res) {
   return res && res._header ? res.statusMessage : '';
 });
-/**
- * DO NOT CALL THESE LOGGING METHODS DIRECTLY - They are called internally by console.* (See below)
- */
-const logStream = fs.createWriteStream('logs/app.log', { flags: 'a' });
+//
+// DO NOT CALL THESE LOGGING METHODS DIRECTLY - They are called internally by console.* (See below)
+//
+const logStream = fs.createWriteStream(path.resolve(_services.server.log_path, 'server.app.log'), { flags: 'a' });
 const __writeLog = function(level, color, shouldLog) {
   return function() {
     color = color || 'blue';
@@ -87,13 +94,13 @@ console.dir = __writeLog('DIR', 'gray', true);
  * Middleware & Security
  * =====================================================
  */
-// app.use(cookieParser({ secret: _services.server.cookie_secret }));
 app.use(bodyParser.urlencoded({ extended: false }));    // parse form data and assign to req.body
 app.use(bodyParser.json({ limit: '25mb' }));
+// app.use(cookieParser({ secret: _services.server.cookie_secret }));
 // app.use(csurf({ cookie: true }));   // Create a req.csrfToken() method to generate CSRF tokens
 app.use(logger(loggerFormat, loggerOptions));   // handle console logs formatting
 app.use(session({
-  store: new MongoSessionStore(_services.mongodb.Sessions),
+  store: sessionStore,
   secret: _services.server.session_secret,
   resave: false,
   saveUninitialized: true
@@ -118,7 +125,7 @@ app.use(helmet.contentSecurityPolicy({
 // ------==========   Disable X-Powered-By   ==========------
 app.use(function setPoweredByHeader(req, res, next) {
   app.disable('X-Powered-By');
-  res.setHeader('X-Powered-By', 'CSV-Filer');
+  res.setHeader('X-Powered-By', '');
   next();
 });
 // ------==========   Enable CORS   ==========------
@@ -138,7 +145,7 @@ app.use(function setAccessControlHeaders(req, res, next) {
  * Routing Configuration
  * =====================================================
  */
-app.use('/ping(.html)?', function(req, res) { res.status(200).send('pong'); });   // Status check
+app.use('/ping(.html)?', function(req, res) { res.sendStatus(200); });   // Status check
 app.use('/assets', express.static(path.join(__dirname, 'src/')));   // Static assets
 app.use(require(path.join(__dirname, 'app/routes/router.js')));   // Register main app routes
 
@@ -149,7 +156,7 @@ app.use(require(path.join(__dirname, 'app/routes/router.js')));   // Register ma
  * =====================================================
  */
 console.assert('Starting server...');
-console.assert('NODE_ENV=', process.env.NODE_ENV);
+console.assert('NODE_ENV =', process.env.NODE_ENV);
 
 let db = Database,
   server = http.createServer(app);
@@ -168,24 +175,29 @@ process.on('uncaughtException', function(err) {
 });
 
 
-async function startServer(server, db) {
-  await db.connectAll();
-  server.listen(app.get('port'), function(err) {
-    if (err) return console.error('Server failed to start on port', process.env.PUBLIC_PORT || app.get('port'));
-    console.log('Express server started on port', process.env.PUBLIC_PORT || app.get('port'));
-  });
+function startServer(server, db) {
+  db.connectAll()
+      .then(() => {
+        server.listen(app.get('port'), function (err) {
+          if (err) return console.error('Server failed to start on port', process.env.PUBLIC_PORT || app.get('port'));
+          console.log('Express server started on port', process.env.PUBLIC_PORT || app.get('port'));
+        });
+      })
+      .catch(console.error);
 }
 
 /**
  * @function shutdownServer
  * @description Helper method to gracefully shutdown the server and any open connections
  */
-async function shutdownServer() {
+function shutdownServer() {
   console.assert('Server shutting down...');
   if (db) {
     try {
-      await db.disconnectAll();
-      console.assert('Closed all MongoDB connections');
+      db.disconnectAll()
+          .then(() => {
+            console.assert('Closed all MongoDB connections');
+          });
     }
     catch (err) {
       console.assert('Failed to close MongoDB connections');
