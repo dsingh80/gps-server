@@ -6,27 +6,27 @@ module.exports.production = {
     // we can connect to "mongo:27017" because docker will resolve the "mongo" service to some internal host
     "Clients": {
       uri: "mongodb://primetracking-clients:<password>@mongo:27017/primetracking",
-      collection: 'users'
+      collection: 'clients'
     },
     "Devices": {
       uri: "mongodb://primetracking-devices:<password>@mongo:27017/primetracking",
-      collection: 'users'
+      collection: 'devices'
     },
     "Subscriptions": {
       uri: "mongodb://primetracking-subscriptions:<password>@mongo:27017/primetracking",
-      collection: 'users'
+      collection: 'subscriptions'
     },
     "WialonUsers": {
       uri: "mongodb://primetracking-wialon-users:<password>@mongo:27017/primetracking",
-      collection: 'users'
+      collection: 'wialon_users'
     },
     "StripeCustomers": {
       uri: "mongodb://primetracking-stripe-customers:<password>@mongo:27017/primetracking",
-      collection: 'users'
+      collection: 'stripe_customers'
     },
     "WooCommerceCustomers": {
       uri: "mongodb://primetracking-woocommerce-customers:<password>@mongo:27017/primetracking",
-      collection: 'users'
+      collection: 'woocommerce_customers'
     },
     "Sessions": {
       uri: "mongodb://primetracking-sessions:<password>@mongo:27017/primetracking",
