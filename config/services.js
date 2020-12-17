@@ -51,27 +51,27 @@ module.exports.development = {
     "dbName": "primetracking",
     "Clients": {
       uri: "mongodb://primetracking-clients:test@mongo:27017/primetracking",
-      collection: 'users'
+      collection: 'clients'
     },
     "Devices": {
       uri: "mongodb://primetracking-devices:test@mongo:27017/primetracking",
-      collection: 'users'
+      collection: 'devices'
     },
     "Subscriptions": {
       uri: "mongodb://primetracking-subscriptions:test@mongo:27017/primetracking",
-      collection: 'users'
+      collection: 'subscriptions'
     },
     "WialonUsers": {
       uri: "mongodb://primetracking-wialon-users:test@mongo:27017/primetracking",
-      collection: 'users'
+      collection: 'wialon_users'
     },
     "StripeCustomers": {
       uri: "mongodb://primetracking-stripe-customers:test@mongo:27017/primetracking",
-      collection: 'users'
+      collection: 'stripe_customers'
     },
     "WooCommerceCustomers": {
       uri: "mongodb://primetracking-woocommerce-customers:test@mongo:27017/primetracking",
-      collection: 'users'
+      collection: 'woocommerce_customers'
     },
     "Sessions": {
       uri: "mongodb://primetracking-sessions:test@mongo:27017/primetracking",
