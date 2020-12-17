@@ -1,12 +1,12 @@
 'use strict';
 
-const MongoDB = require('mongoose'),
-  UsersCollection = require('./UsersCollection');
+const mongoose = require('mongoose'),
+  CollectionFactory = require('./CollectionFactory');
 
 const config = require('../../config/services.js');
 let _services;
-if (process.env.NODE_ENV == 'development') _services = config.development;
-else _services = config.production;
+if (process.env.NODE_ENV === 'development') _services = config['development'];
+else _services = config['production'];
 
 
 /**
@@ -17,16 +17,15 @@ else _services = config.production;
  */
 class Database {
 
-  constructor(dbServices) {
-    this.__UsersCollection = null;
-
-    this.__connectOptions = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      dbName: dbServices.dbName
-    };
-
-    this.__dbServices = dbServices;
+  constructor(dbConfig) {
+    this.ClientsCollection = null;
+    this.DevicesCollection = null;
+    this.SubscriptionsCollection = null;
+    this.WialonUsersCollection = null;
+    this.StripeCustomersCollection = null;
+    this.WooCommerceCustomersCollection = null;
+    this.__collectionFactory = new CollectionFactory(dbConfig);
+    this.__dbConfig = dbConfig;
   }
 
 
@@ -38,35 +37,25 @@ class Database {
    * Otherwise, the app may crash with errors relating to undefined database connections
    */
   async connectAll() {
-    try {
-      if (this.__UsersCollection == null) {
-        this.__connect(this.__dbServices.Users.uri)
-            .then((connection) => {
-              this.__UsersCollection = new UsersCollection(connection);
-              console.info('Connected to UsersCollection!');
-            })
-            .catch(console.error);
-      }
+    if (this.ClientsCollection == null) {
+      this.ClientsCollection = await this.__collectionFactory.getClientsCollection();
     }
-    catch (err) {
-      this.__UsersCollection = null;
-      throw err;
+    if (this.DevicesCollection == null) {
+      this.DevicesCollection = await this.__collectionFactory.getDevicesCollection();
+    }
+    if (this.SubscriptionsCollection == null) {
+      this.SubscriptionsCollection = await this.__collectionFactory.getSubscriptionsCollection();
+    }
+    if (this.WialonUsersCollection == null) {
+      this.WialonUsersCollection = await this.__collectionFactory.getWialonUsersCollection();
+    }
+    if (this.StripeCustomersCollection == null) {
+      this.StripeCustomersCollection = await this.__collectionFactory.getStripeCustomersCollection();
+    }
+    if (this.WooCommerceCustomersCollection == null) {
+      this.WooCommerceCustomersCollection = await this.__collectionFactory.getWooCommerceCustomersCollection();
     }
     return this;
-  }
-
-
-  /**
-   * @method __connect
-   * @param uri - MongoDB URI used to connect to the database with authentication
-   * @returns {Promise}
-   * @description
-   * Connect to a MongoDB instance.
-   * This is internal-use-only because we want the Database to make all connections once at initialization.
-   * No one else should be calling this method or they'd break encapsulation and have access to MongoDB <Connection> directly
-   */
-  __connect(uri) {
-    return MongoDB.createConnection(uri, this.__connectOptions);
   }
 
 
@@ -76,30 +65,113 @@ class Database {
    * @description Disconnect all open MongoDB connections. Nullifies any connections stored in variables
    */
   async disconnectAll() {
-    let promise = MongoDB.disconnect();
-    this.__UsersCollection = null;
+    let promise = mongoose.disconnect();
+    this.ClientsCollection = null;
+    this.DevicesCollection = null;
+    this.SubscriptionsCollection = null;
+    this.WialonUsersCollection = null;
+    this.StripeCustomersCollection = null;
+    this.WooCommerceCustomersCollection = null;
     return promise;
   }
 
 
   /**
-   * @method users
-   * @description Alias for getUsersCollection
+   * @type {ClientsCollection} clients
    */
-  get users() {
-    return this.getUsersCollection();
+  get clients() {
+    return this.getClientsCollection();
   }
 
 
   /**
-   * @method getUsersCollection
-   * @description Returns the UsersCollection object that manages the User schema
+   * @type {DevicesCollection} devices
    */
-  getUsersCollection() {
-    return this.__UsersCollection;
+  get devices() {
+    return this.getDevicesCollection();
+  }
+
+
+  /**
+   * @type {SubscriptionsCollection} subscriptions
+   */
+  get subscriptions() {
+    return this.getSubscriptionsCollection();
+  }
+
+
+  /**
+   * @type {WialonUsersCollection} wialonUsers
+   */
+  get wialonUsers() {
+    return this.getWialonUsersCollection();
+  }
+
+
+  /**
+   * @type {WialonUsersCollection} stripeCustomers
+   */
+  get stripeCustomers() {
+    return this.getStripeCustomersCollection();
+  }
+
+
+  /**
+   * @type {WialonUsersCollection} wcCustomers
+   */
+  get wcCustomers() {
+    return this.getWCCustomersCollection();
+  }
+
+
+  /**
+   * @method getClientsCollection
+   */
+  getClientsCollection() {
+    return this.ClientsCollection;
+  }
+
+
+  /**
+   * @method getDevicesCollection
+   */
+  getDevicesCollection() {
+    return this.DevicesCollection;
+  }
+
+
+  /**
+   * @method getSubscriptionsCollection
+   */
+  getSubscriptionsCollection() {
+    return this.SubscriptionsCollection;
+  }
+
+
+  /**
+   * @method getWialonUsersCollection
+   */
+  getWialonUsersCollection() {
+    return this.WialonUsersCollection;
+  }
+
+
+  /**
+   * @method getStripeCustomersCollection
+   */
+  getStripeCustomersCollection() {
+    return this.StripeCustomersCollection;
+  }
+
+
+  /**
+   * @method getWCCustomersCollection
+   */
+  getWCCustomersCollection() {
+    return this.WooCommerceCustomersCollection;
   }
 
 }
 
 
-module.exports = new Database(_services.mongodb);
+module.exports = new Database(_services['mongodb']);

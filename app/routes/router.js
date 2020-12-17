@@ -8,15 +8,25 @@
 
 const router = require('express').Router();
 
-const UsersRouteHandler = require('./api_users');
+const ClientRouteHandler = require('./api_clients'),
+  DeviceRouteHandler = require('./api_devices'),
+  SubscriptionRouteHandler = require('./api_subscriptions');
+
+
+
+/**
+ *
+ * TODO: Add authentication to protected routes
+ *
+ */
 
 
 /**
  * Route Definitions
  */
-router.use('/u', UsersRouteHandler);
-router.use('/', redirectToLogin);
-
+router.use('/clients', ClientRouteHandler);
+router.use('/devices', DeviceRouteHandler);
+router.use('/subscriptions', SubscriptionRouteHandler);
 
 /**
  * =========================================
@@ -25,9 +35,7 @@ router.use('/', redirectToLogin);
  *
  * =========================================
  */
-function redirectToLogin(req, res, next) {
-  res.redirect('/u/login');
-}
+
 
 
 module.exports = router;

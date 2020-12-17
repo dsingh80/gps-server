@@ -14,6 +14,7 @@ const express = require('express'),
   session = require('express-session'),
   MongoSessionStore = require('connect-mongodb-session')(session),
   Database = require('./app/classes/Database'),
+  utils = require('./app/utils'),
   http = require('http'),
   path = require('path'),
   util = require('util'),
@@ -25,11 +26,10 @@ const express = require('express'),
  * =====================================================
  */
 const app = express(),
-  config = require(path.join(__dirname, 'config/services.js'));
+  config = utils.requireUncached(path.join(__dirname, 'config/services.js'));
 let _services;
 if (process.env.NODE_ENV == 'development') _services = config.development;
 else _services = config.production;
-
 
 const sessionStore = new MongoSessionStore(_services.mongodb.Sessions);
 sessionStore.on('connected', function() {
@@ -157,6 +157,7 @@ app.use(require(path.join(__dirname, 'app/routes/router.js')));   // Register ma
  */
 console.assert('Starting server...');
 console.assert('NODE_ENV =', process.env.NODE_ENV);
+console.assert('-----------====== Make sure database has Access Control enabled! ======-----------');
 
 let db = Database,
   server = http.createServer(app);

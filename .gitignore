@@ -10,8 +10,7 @@ sessions
 
 # Config #
 ##########
-# config            # TODO: THIS LINE SHOULD BE UNCOMMENTED DURING DEVELOPMENT
-                    # Only kept here so the format of the config folder/files is apparent
+config
 
 # Certificates #
 ################

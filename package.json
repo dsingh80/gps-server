@@ -1,5 +1,5 @@
 {
-  "name": "server-template",
+  "name": "primetracking-server",
   "private": true,
   "version": "1.0.0",
   "engines": {
@@ -9,10 +9,9 @@
   "main": "server.js",
   "scripts": {
     "build": "docker-compose build",
-    "start": "npm run start:dev",
-    "start:dev": "NODE_ENV=development node ./server.js",
+    "dev:clean": "docker-compose down && docker image prune -f && docker container prune -f && docker volume prune -f",
+    "start:dev": "NODE_ENV=development nodemon -L --watch app --exec 'node ./server.js'",
     "start:prod": "NODE_ENV=production node ./server.js",
-    "start:pm2": "NODE_ENV=production pm2 start ./server.js",
     "docker": "npm run build && npm run docker:mongo && npm run docker:server",
     "docker:server": "docker-compose up server",
     "docker:mongo": "docker-compose up -d mongo"
