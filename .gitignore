@@ -8,10 +8,6 @@
 /dist/
 sessions
 
-# Config #
-##########
-config
-
 # Certificates #
 ################
 #*.crt
