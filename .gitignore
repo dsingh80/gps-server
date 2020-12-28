@@ -10,9 +10,10 @@ sessions
 
 # Certificates #
 ################
-#*.crt
-#*.key
-#*.pem
+*.crt
+*.csr
+*.key
+*.pem
 
 # System #
 ################

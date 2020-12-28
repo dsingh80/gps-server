@@ -114,7 +114,9 @@ module.exports.RequestStatus = {
  * @description Used for any internal errors to maintain a consistent error interface
  */
 module.exports.ApplicationError = function(message, additionalParams={}) {
+  let err = {};
   if(!message) { throw 'Attempt to initialize ApplicationError without an error message'; }
-  this.message = message;
-  Object.keys(additionalParams).forEach((key) => this[key] = additionalParams[key]);
+  err.message = message;
+  Object.keys(additionalParams).forEach((key) => err[key] = additionalParams[key]);
+  return err;
 }

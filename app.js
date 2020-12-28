@@ -8,6 +8,7 @@
 
 const express = require('express'),
   bodyParser = require('body-parser'),
+  cookieParser = require('cookie-parser'),
   helmet = require('helmet'),
   logger = require('morgan'),
   colors = require('colors/safe'),
@@ -15,7 +16,7 @@ const express = require('express'),
   MongoSessionStore = require('connect-mongodb-session')(session),
   Database = require('./app/classes/Database'),
   utils = require('./app/utils'),
-  http = require('http'),
+  https = require('https'),
   path = require('path'),
   util = require('util'),
   fs = require('fs');
@@ -28,7 +29,10 @@ const express = require('express'),
 const app = express(),
   config = utils.requireUncached(path.join(__dirname, 'config/services.js'));
 let _services;
-if (process.env.NODE_ENV == 'development') _services = config.development;
+if (process.env.NODE_ENV == 'development') {
+  app.set('devmode', true);
+  _services = config.development;
+}
 else _services = config.production;
 
 const sessionStore = new MongoSessionStore(_services.mongodb.Sessions);
@@ -39,8 +43,9 @@ sessionStore.on('error', function(err) {
   console.error(err);
 });
 // Set app constants
-app.set('development', _services.server.development);
 app.set('port', _services.server.port);
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'app', 'views'));
 
 
 /**
@@ -96,8 +101,6 @@ console.dir = __writeLog('DIR', 'gray', true);
  */
 app.use(bodyParser.urlencoded({ extended: false }));    // parse form data and assign to req.body
 app.use(bodyParser.json({ limit: '25mb' }));
-// app.use(cookieParser({ secret: _services.server.cookie_secret }));
-// app.use(csurf({ cookie: true }));   // Create a req.csrfToken() method to generate CSRF tokens
 app.use(logger(loggerFormat, loggerOptions));   // handle console logs formatting
 app.use(session({
   store: sessionStore,
@@ -105,14 +108,6 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
-// TODO: Enable this when SSL is setup on the server
-// ------==========   Redirect Insecure Requests to HTTPs   ==========------
-// if (!app.get('development')) {
-//   app.use(function redirectInsecureRequests(req, res, next) {
-//     if (!req.secure && req.get('X-Forwarded-Proto') !== 'https') return res.redirect('https://' + req.get('host') + req.url);
-//     next();
-//   });
-// }
 // ------==========   Disables iframe loading, xss reflection attacks, and more   ==========------
 app.use(helmet.frameguard({ action: 'sameorigin' }));
 app.use(helmet.ieNoOpen());
@@ -158,9 +153,12 @@ app.use(require(path.join(__dirname, 'app/routes/router.js')));   // Register ma
 console.assert('Starting server...');
 console.assert('NODE_ENV =', process.env.NODE_ENV);
 console.assert('-----------====== Make sure database has Access Control enabled! ======-----------');
-
+let options = {
+  key: fs.readFileSync(path.join(__dirname, 'config', 'ssl.key'), 'utf8'),
+  cert: fs.readFileSync(path.join(__dirname, 'config', 'ssl.crt'), 'utf8')
+};
 let db = Database,
-  server = http.createServer(app);
+  server = https.createServer(options, app);
 
 startServer(server, db);
 

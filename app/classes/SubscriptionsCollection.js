@@ -35,7 +35,7 @@ class SubscriptionsCollection extends Collection {
    * @param {String} platform_id
    * @param {Object=}additionalParams
    * @param {Function=} callback
-   * @returns {Promise<Object>} - newly created device
+   * @returns {Promise<Object>} - newly created document
    * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
    */
   async addSubscription(client_id, platform, platform_id, additionalParams, callback) {
@@ -371,7 +371,7 @@ class SubscriptionsCollection extends Collection {
  * @param {String} platform_id
  * @param {Object=} additionalParams
  * @param {Function=} callback
- * @returns {Promise<Object>} - newly created subscription
+ * @returns {Promise<Object>} - newly created document
  */
 SubscriptionsCollection.prototype._addSubscription = async function(self, client_id, platform, platform_id, additionalParams, callback) {
   let properties = {...additionalParams};

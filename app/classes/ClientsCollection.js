@@ -2,10 +2,20 @@
 
 const Collection = require('./Collection'),
   ClientSchema = require('../schemas/client'),
-  utils = require('../utils');
+  utils = require('../utils'),
+  path = require('path');
 
 const ApplicationError = utils.ApplicationError,
-  ObjectId = require('mongoose').Types.ObjectId;
+  ObjectId = require('mongoose').Types.ObjectId,
+  servicesConfig = utils.requireUncached(path.join(__dirname, '../..', 'config/services'));
+
+let _services;
+if (process.env.NODE_ENV == 'development') {
+  _services = servicesConfig.development;
+}
+else _services = servicesConfig.production;
+
+const FIVE_MINUTES = 1000 * 60 * 5;
 
 
 /**
@@ -31,9 +41,9 @@ class ClientsCollection extends Collection {
   /**
    * @method addClient
    * @param {String} email
-   * @param {Object=}additionalParams
+   * @param {Object=} additionalParams
    * @param {Function=} callback
-   * @returns {Promise<Object>} - newly created device
+   * @returns {Promise<Object>} - newly created document
    * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
    */
   async addClient(email, additionalParams, callback) {
@@ -123,6 +133,38 @@ class ClientsCollection extends Collection {
         'email': email
       };
       this.request(ClientsCollection.prototype._getClient, [this, filter, select, options], function(err, data) {
+        if(callback) { callback(err, data); }
+        if(err) { reject(err); }
+        else { resolve(data); }
+      });
+    });
+  }
+
+
+  /**
+   * @method authenticate
+   * @param {String} email
+   * @param {String} password
+   * @param {Function=} callback
+   * @returns {Promise<Object>}
+   * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
+   */
+  async authenticate(email, password, callback) {
+    const requiredParams = {
+      email: 'string',
+      password: 'string'
+    };
+    const optionalParams = {
+      callback: 'function'
+    };
+    return new Promise((resolve, reject) => {
+      if(!utils.typeCheck(arguments, requiredParams, true, false) || !utils.typeCheck(arguments, optionalParams)) {
+        let err = new ApplicationError('Invalid params');
+        if(callback) { callback(err); }
+        reject(err);
+        return;
+      }
+      this.request(ClientsCollection.prototype._authenticate, [this, email, password], function(err, data) {
         if(callback) { callback(err, data); }
         if(err) { reject(err); }
         else { resolve(data); }
@@ -250,14 +292,28 @@ class ClientsCollection extends Collection {
  * @param {String} email
  * @param {Object=} additionalParams
  * @param {Function=} callback
- * @returns {Promise<Object>} - newly created client
+ * @returns {Promise<Object>} - newly created document
  */
 ClientsCollection.prototype._addClient = async function(self, email, additionalParams, callback) {
   let properties = {...additionalParams};
   properties.email = email;
 
+  let password;
+  if(properties.password) {
+    password = properties.password;
+    delete properties.password;
+  }
+
+  let promise;
   let doc = new self.model(properties);
-  doc.save()
+  if(password) {
+    promise = doc.setPassword(password)
+  }
+  else {
+    promise = doc.save();
+  }
+
+  promise
     .then((obj) => callback(null, obj))
     .catch((err) => callback(err));
 }
@@ -295,6 +351,54 @@ ClientsCollection.prototype._getClient = async function(self, filter, select, op
   options = options || {};
 
   self.__findOne(self, filter, select, options, callback);
+};
+
+
+/**
+ * @protected
+ * @method _authenticate
+ * @param {Object} self - instantiated object of this class (included as a parameter because 'this' can be undefined for prototypes)
+ * @param {String} email
+ * @param {String} password
+ * @param {Function} callback - function/method to call when finished; function(err, data);
+ */
+ClientsCollection.prototype._authenticate = async function(self, email, password, callback) {
+  let select = {
+    salt: 1,
+    password: 1,
+    failed_login_attempts: 1,
+    last_logged_in: 1,
+    last_login_attempt: 1,
+    locked_until: 1
+  };
+
+  self.getClientByEmail(email, select)
+    .then((doc) => {
+      if(doc.locked_until && new Date(doc.locked_until) > new Date()) {  // account is locked. cannot login
+        if(callback) { callback(new ApplicationError('Account temporarily locked. Please try again later')); }
+        return;
+      }
+
+      doc.last_login_attempt = new Date();
+      doc.validatePassword(password)
+        .then(() => {
+          doc.last_logged_in = new Date();
+          doc.failed_login_attempts = 0;
+          doc.locked_until = null;
+          if(callback) { callback(null, doc); }
+        })
+        .catch(() => {
+          if(callback) { callback(new ApplicationError('Invalid login credentials')); }
+          incrementFailedLogins(doc, false);
+        })
+        .finally(() => {
+          doc.save().then(()=>{}).catch((err)=>console.error(err));
+        });
+
+    })
+    .catch(() => {
+      if(callback) { callback(new ApplicationError('Invalid login credentials')); }
+    });
 };
 
 
@@ -392,8 +496,36 @@ ClientsCollection.prototype.__find = async function(self, filter, select, option
  */
 ClientsCollection.prototype.__updateOne = async function(self, filter, updates, options, callback) {
   options = options || {};
+  if(updates.password) {
+    delete updates.password;  // use ClientModel.setPassword to update this property.
+  }
   Collection.__updateOne(self.model, filter, updates, options, callback);
 };
+
+
+/**
+ * =========================================================================================
+ * Various miscellaneous functions
+ * This section is just for code that would clutter the main functionality of the code above
+ * =========================================================================================
+ */
+
+/**
+ * @function incrementFailedLogins
+ * @param {Object} doc - mongodb document to modify
+ * @param {Boolean=true} shouldSave
+ */
+function incrementFailedLogins(doc, shouldSave=true) {
+  doc.failed_login_attempts += 1;
+  if(doc.failed_login_attempts >= _services.server.MAX_LOGIN_ATTEMPTS) {
+    doc.failed_login_attempts = _services.server.MAX_LOGIN_ATTEMPTS;
+    doc.locked_until = new Date(Date.now() + FIVE_MINUTES);
+  }
+
+  if(shouldSave) {
+    doc.save().then(()=>{}).catch((err)=>console.error(err));
+  }
+}
 
 
 

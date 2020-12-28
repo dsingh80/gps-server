@@ -34,7 +34,7 @@ class StripeCustomersCollection extends Collection {
    * @param {String} stripe_customer_id
    * @param {Object=}additionalParams
    * @param {Function=} callback
-   * @returns {Promise<Object>} - newly created device
+   * @returns {Promise<Object>} - newly created document
    * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
    */
   async addStripeCustomer(client_id, stripe_customer_id, additionalParams, callback) {
@@ -176,7 +176,7 @@ class StripeCustomersCollection extends Collection {
  * @param {String} stripe_customer_id
  * @param {Object=} additionalParams
  * @param {Function=} callback
- * @returns {Promise<Object>} - newly created stripe_customer
+ * @returns {Promise<Object>} - newly created document
  */
 StripeCustomersCollection.prototype._addStripeCustomer = async function(self, client_id, stripe_customer_id, additionalParams, callback) {
   let properties = {...additionalParams};

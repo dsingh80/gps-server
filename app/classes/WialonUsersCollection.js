@@ -35,7 +35,7 @@ class WialonUsersCollection extends Collection {
    * @param {String} wialon_account_id
    * @param {Object=}additionalParams
    * @param {Function=} callback
-   * @returns {Promise<Object>} - newly created device
+   * @returns {Promise<Object>} - newly created document
    * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
    */
   async addWialonUser(client_id, wialon_user_id, wialon_account_id, additionalParams, callback) {
@@ -179,7 +179,7 @@ class WialonUsersCollection extends Collection {
  * @param {String} wialon_account_id
  * @param {Object=} additionalParams
  * @param {Function=} callback
- * @returns {Promise<Object>} - newly created wialon_user
+ * @returns {Promise<Object>} - newly created document
  */
 WialonUsersCollection.prototype._addWialonUser = async function(self, client_id, wialon_user_id, wialon_account_id, additionalParams, callback) {
   let properties = {...additionalParams};

@@ -10,24 +10,8 @@
    ========================================================================== */
 
 html {
-    /* Light Theme */
-    /*--primary-color: #31C1DF;*/
-    /*--secondary-color: #FFF;*/
-    /*--text-color: #222;*/
-    /*--bg-color: #FFF;*/
-    /*--logo-color: #000;*/
-
-    /* Dark Theme - DON'T FORGET TO CHANGE LOGO COLOR */
-    --primary-color: #31C1DF;
-    --secondary-color: #215166; /* 3A3A3A */
-    --text-color: #DBDBDB;
-    --bg-color: #2A2E39;
-    --logo-color: #FFF;
-
-    color: var(--text-color);
-    font-size: 1em;
-    line-height: 1.4;
-
+    font-size: 16px;
+    line-height: 1.2rem;
 }
 
 /*
@@ -41,35 +25,8 @@ html {
  */
 
 ::selection {
-    background: var(--primary-color);
+    background: rgba(0, 185, 228, 0.24);
     text-shadow: none;
-}
-
-/**
- * Input validation styling
- */
-input:focus {
-    background: var(--bg-color) !important; /* rgba(0, 185, 228, 0.24) */
-    outline: none;
-}
-input:invalid:not(:placeholder-shown):not(:focus) {  /* Requires that every type-able input have a non-empty placeholder */
-    background: rgba(255, 0, 0, .2) !important;
-}
-button {
-    cursor: pointer;
-}
-
-/*
- * A better looking default horizontal rule
- */
-
-hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid var(--secondary-color);
-    margin: 1em 0;
-    padding: 0;
 }
 
 /*
@@ -112,14 +69,14 @@ textarea {
 .browserupgrade {
     margin: 0.2em 0;
     background: #ccc;
-    color: var(--text-color);
+    color: #000000;
     padding: 0.2em 0;
 }
 
 a {
     text-decoration: none;
     font-style: italic;
-    color: var(--primary-color);
+    color: inherit;
 }
 
 /* ==========================================================================
@@ -135,7 +92,6 @@ html {
 body {
     margin: 0;
     padding: 0;
-    background: var(--bg-color); /* fallback for old browsers */
     overflow-x: hidden;
 }
 .container {
@@ -146,289 +102,6 @@ body {
 }
 #main {
     max-width: 720px;
-}
-
-/* Header Styling */
-section#headerContainer {
-    display: block;
-    width: 100%;
-    color: var(--text-color);
-    /*border-bottom: 2px solid var(--primary-color);*/
-    /*background: var(--primary-color);*/
-}
-#header {
-    display: block;
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 30px 10px 15px 10px;
-}
-#logo {
-    display: inline-block;
-    vertical-align: middle;
-    /*filter: invert(100%);*/
-    width: 150px;
-}
-#logo + .title {
-    display: inline-block;
-    width: calc(100% - 155px);
-    margin: 0;
-    vertical-align: middle;
-    text-align: right;
-    text-transform: uppercase;
-    font-size: 3em;
-    color: var(--logo-color);
-}
-
-/* Form Styling */
-#errorMessagesContainer {
-    display: block;
-    padding: 10px 20px;
-    width: 100%;
-    background: rgba(255, 0, 0, .24);
-    border-radius: 10px;
-    border: 2px solid rgba(255, 0, 0, .5);
-}
-#errorMessagesContainer > p {
-    font-weight: bold;
-}
-#errorMessages{
-    color: var(--text-color);
-}
-form {
-    position: relative;
-}
-#submitBtn {
-    display: block;
-    width: 100%;
-    margin-top: 20px;
-    padding: 20px;
-    border: none;
-    border-radius: 10px;
-    font-weight: bold;
-    font-size: 2em;
-    text-transform: uppercase;
-    color: var(--bg-color);
-    background: var(--primary-color);
-}
-/* Input Group styling */
-.input-group {
-    margin-top: 10px;
-}
-.input-group.inline {
-    display: inline-block;
-    width: 48%;
-}
-label {
-    display: inline-block;
-    vertical-align: bottom;
-    font-weight: lighter;
-    text-transform: uppercase;
-    font-size: .8em;
-    color: var(--primary-color);
-}
-input {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: none;
-    border-bottom: 2px solid var(--primary-color);
-    background: var(--secondary-color);
-    color: var(--text-color);
-}
-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    background: var(--secondary-color);
-    border: none;
-    border-bottom: 2px solid var(--primary-color);
-    border-radius: 0;
-    color: var(--text-color);
-}
-select::-ms-expand {
-    display: none;
-}
-select:focus {
-    outline: none;
-}
-.information-container {
-    display: inline-block;
-    vertical-align: bottom;
-    position: relative;
-    cursor: pointer;
-    margin-left: 5px;
-    /*float: right;*/
-}
-.information-container > .trigger {
-    display: inline-block;
-    width: 1.2em;
-    height: 1.2em;
-    line-height: 1.2em;
-    text-align: center;
-    vertical-align: middle;
-    border-radius: 1.2em;
-    background: var(--primary-color);
-    color: var(--bg-color);
-    font-weight: bold;
-    /*box-shadow: inset 0 0 4px 0 #999;*/
-}
-.information-container:hover  > .information {
-    display: inline-block;
-}
-.information {
-    display: none;
-    width: 200px;
-    padding: 10px;
-    position: absolute;
-    right: -210px;
-    cursor: initial;
-    vertical-align: middle;
-    border: 1px solid var(--primary-color);
-    background: var(--bg-color);
-    z-index: 2;
-}
-.information::after {
-    content: '';
-    display: block;
-    width: 0;
-    height: 0;
-    position: absolute;
-    left: -10px;
-    top: 0;
-    /* Make a left arrow */
-    /*border-left: solid .25em transparent;*/
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
-    border-right: 10px solid var(--primary-color);
-}
-.information * {
-    margin: 0;
-    padding: 0;
-}
-
-
-/* Service Plan Styling */
-#planContainer {
-    display: flex;
-    position: relative;
-    margin-bottom: 75px;
-}
-#planContainer [type=radio] {
-    display: none;
-}
-.btn-plan-container {
-    position: relative;
-    flex: 1 0 50%;
-}
-.btn-plan {
-    padding: 20px 35px;
-    border: none;
-    border-radius: 10px;
-    border-top: 2px solid var(--primary-color);
-    border-bottom: 2px solid var(--primary-color);
-    background: var(--secondary-color);
-    color: var(--text-color);
-    /*cursor: pointer;*/
-}
-.btn-plan-container:nth-of-type(1) {
-    margin-right: 5px;
-}
-.btn-plan-container:nth-of-type(2) {
-    margin-left: 5px;
-}
-/*input[type=radio]:checked + .btn-plan {*/
-    /*background: var(--primary-color);*/
-    /*color: var(--bg-color);*/
-/*}*/
-/*input[type=radio]:checked + .btn-plan .plan-price{*/
-    /*color: var(--bg-color);*/
-/*}*/
-.plan-price {
-    display: block;
-    margin: 0 auto;
-    font-size: 5em;
-    height: 80px;
-    line-height: 80px;
-    color: var(--primary-color);
-}
-.plan-price::before {
-    content: '$';
-    display: inline-block;
-    position: absolute;
-    font-size: .5em;
-    transform: translate(-.6em, -.4em);
-}
-.plan-price::after {
-    content: '/mo';
-    font-size: .4em;
-    text-transform: lowercase;
-}
-.plan-title {
-    display: block;
-    margin: 0 auto;
-    font-size: 1.5em;
-    height: 50px;
-    line-height: 50px;
-    color: inherit;
-}
-.plan-description {
-    display: block;
-    margin: 0 auto;
-    height: 60px;
-    color: inherit;
-}
-#acceptedCards {
-    display: block;
-    max-width: 200px;
-}
-
-
-/* ==========================================================================
-   Stripe classes
-   ========================================================================== */
-.stripe-button,
-.stripe-button-el {
-    position: absolute;
-    top: 100%;
-    margin-top: 3px;
-    width: 100%;
-    min-height: 3rem;
-    z-index: 3;
-    background: var(--primary-color) !important;
-    /*background: none !important;*/
-    /*background-image: none !important;*/
-    /*background-color: none !important;*/
-}
-.stripe-button:disabled,
-.stripe-button-el:disabled {
-    background: var(--primary-color) !important;
-    opacity: .5;
-}
-.stripe-button > span,
-.stripe-button-el > span {
-    /*display: none !important;*/
-    background: none !important;
-    color: black !important;
-    text-shadow: none !important;
-    -webkit-box-shadow: none !important;
-    -moz-box-shadow: none !important;
-    box-shadow: none !important;
-    font-size: 3rem;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-.stripe-button:disabled + input + label,
-.stripe-button-el:disabled + input + label {
-    opacity: .5;
-}
-.stripe-button:disabled + input + label *,
-.stripe-button-el:disabled + input + label *{
-    color: black !important;
 }
 
 /* ==========================================================================

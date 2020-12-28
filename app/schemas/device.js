@@ -51,7 +51,7 @@ let DeviceSchema = mongoose.Schema({
     editable: true,
     lowercase: true,
     trim: true,
-    required: true
+    required: false
   },
   platform_id: {    // This functions as our id for the device. There's a virtual getter on id that will return this value
     type: String,
@@ -60,7 +60,7 @@ let DeviceSchema = mongoose.Schema({
     lowercase: true,
     trim: true,
     index: true,
-    required: true
+    required: false
   },
   status: {
     type: String,
@@ -91,7 +91,7 @@ let DeviceSchema = mongoose.Schema({
   }
 }, options);
 
-DeviceSchema.index({ platform: 1, platform_id: 1 }, { unique: true });
+DeviceSchema.index({ platform: 1, platform_id: 1 }, { sparse: true });
 
 DeviceSchema.plugin(paginate);
 

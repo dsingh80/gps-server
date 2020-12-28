@@ -6,7 +6,7 @@ services:
     depends_on:
       - mongo # looks for a service defined in this compose file, with the exact name defined here (case-sensitive)
     ports:
-      - "8080:8080" # Map local port 8080 to container port 8080
+      - "8443:8443" # Map local port 8080 to container port 8080
                     # Without this mapping, there is no way to connect to the container from our local network
     volumes:
       - server_logs:/var/logs/server

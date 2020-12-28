@@ -34,7 +34,7 @@ class WooCommerceCustomersCollection extends Collection {
    * @param {String} wc_customer_id
    * @param {Object=}additionalParams
    * @param {Function=} callback
-   * @returns {Promise<Object>} - newly created device
+   * @returns {Promise<Object>} - newly created document
    * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
    */
   async addWCCustomer(client_id, wc_customer_id, additionalParams, callback) {
@@ -176,7 +176,7 @@ class WooCommerceCustomersCollection extends Collection {
  * @param {String} wc_customer_id
  * @param {Object=} additionalParams
  * @param {Function=} callback
- * @returns {Promise<Object>} - newly created woocommerce_customer
+ * @returns {Promise<Object>} - newly created document
  */
 WooCommerceCustomersCollection.prototype._addWCCustomer = async function(self, client_id, wc_customer_id, additionalParams, callback) {
   let properties = {...additionalParams};

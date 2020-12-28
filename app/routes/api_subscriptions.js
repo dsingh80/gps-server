@@ -14,9 +14,6 @@ const Database = require('../classes/Database'),
 /**
  * Route Definitions
  */
-router.get('/active', getActiveSubscriptions);
-router.get('/inactive', getInactiveSubscriptions);
-router.get('/pending', getPendingSubscriptions);
 router.get('/:subscription_id', getSubscription);
 router.put('/:subscription_id/activate', activateSubscription);
 router.put('/:subscription_id/deactivate', deactivateSubscription);

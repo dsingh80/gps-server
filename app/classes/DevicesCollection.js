@@ -32,20 +32,16 @@ class DevicesCollection extends Collection {
    * @param {String} imei
    * @param {String} iccid
    * @param {String} model
-   * @param {String} platform - which platform the client interacts with this device through (Ex. wialon)
-   * @param {String} platformId - a way to identify the device on the platform
-   * @param {Object=}additionalParams
+   * @param {Object=} additionalParams
    * @param {Function=} callback
-   * @returns {Promise<Object>} - newly created device
+   * @returns {Promise<Object>} - newly created document
    * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
    */
-  async addDevice(imei, iccid, model, platform, platformId, additionalParams, callback) {
+  async addDevice(imei, iccid, model, additionalParams, callback) {
     const requiredParams = {
       imei: 'string',
       iccid: 'string',
       model: 'string',
-      platform: 'string',
-      platformId: 'string'
     };
     const optionalParams = {
       additionalParams: 'object',
@@ -58,7 +54,7 @@ class DevicesCollection extends Collection {
         reject(err);
         return;
       }
-      this.request(DevicesCollection.prototype._addDevice, [this, imei, iccid, model, platform, platformId, additionalParams], function(err, data) {
+      this.request(DevicesCollection.prototype._addDevice, [this, imei, iccid, model, additionalParams], function(err, data) {
         if(callback) { callback(err, data); }
         if(err) { reject(err); }
         else { resolve(data); }
@@ -92,6 +88,39 @@ class DevicesCollection extends Collection {
         return;
       }
       this.request(DevicesCollection.prototype.__findOne, [this, filter, select, options], function(err, data) {
+        if(callback) { callback(err, data); }
+        if(err) { reject(err); }
+        else { resolve(data); }
+      });
+    });
+  }
+
+
+  /**
+   * @method listDevices
+   * @param {Object} filter
+   * @param {Object=} select
+   * @param {Object=} options
+   * @param {Function=} callback
+   * @returns {Promise<Object>}
+   */
+  async listDevices(filter, select, options, callback) {
+    const requiredParams = {
+      filter: 'object',
+    };
+    const optionalParams = {
+      select: 'object',
+      options: 'object',
+      callback: 'function'
+    };
+    return new Promise((resolve, reject) => {
+      if(!utils.typeCheck(arguments, requiredParams, true, false) || !utils.typeCheck(arguments, optionalParams)) {
+        let err = new ApplicationError('Invalid params');
+        if(callback) { callback(err); }
+        reject(err);
+        return;
+      }
+      this.request(DevicesCollection.prototype.__find, [this, filter, select, options], function(err, data) {
         if(callback) { callback(err, data); }
         if(err) { reject(err); }
         else { resolve(data); }
@@ -196,19 +225,15 @@ class DevicesCollection extends Collection {
  * @param {String} imei
  * @param {String} iccid
  * @param {String} model
- * @param {String} platform - which platform the client interacts with this device through (Ex. wialon)
- * @param {String} platformId - a way to identify the device on the platform
  * @param {Object=} additionalParams
  * @param {Function=} callback
- * @returns {Promise<Object>} - newly created device
+ * @returns {Promise<Object>} - newly created document
  */
-DevicesCollection.prototype._addDevice = async function(self, imei, iccid, model, platform, platformId, additionalParams, callback) {
+DevicesCollection.prototype._addDevice = async function(self, imei, iccid, model, additionalParams, callback) {
   let properties = {...additionalParams};
   properties.imei = imei;
   properties.iccid = iccid;
   properties.model = model;
-  properties.platform = platform;
-  properties.platform_id = platformId;
 
   let doc = new self.model(properties);
   doc.save()

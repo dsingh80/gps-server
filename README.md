@@ -24,3 +24,6 @@ OR manually setup the user by copying the commands in _config/init_db_scripts_ a
 1) Make sure you've done everything from the one-time setup already
 2) `npm run docker`
 3) Verify everything works
+
+## Considerations
+If you find the server is running but fails to connect, make sure the port mapping in Docker corresponds to the port in your services config file

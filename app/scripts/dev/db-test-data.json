@@ -1,0 +1,58 @@
+{
+  "Clients": [
+    {
+      "email": "one@two.com",
+      "password": "three",
+      "first_name": "First",
+      "last_name": "Victim",
+      "phone": "123.456.7890"
+    },
+    {
+      "email": "test@test.com",
+      "password": "test",
+      "first_name": "Second",
+      "last_name": "Victim",
+      "phone": "(123)456-7890"
+    }
+  ],
+  "Devices": [
+    {
+      "imei": "imei_1234567890",
+      "iccid": "iccid_124567890",
+      "model": "Testatron",
+      "manufacturer": "Dom's Backyard Grotto"
+    },
+    {
+      "imei": "imei_9876543210",
+      "iccid": "iccid_9876543210",
+      "model": "Testatron",
+      "manufacturer": "Dom's Backyard Grotto"
+    },
+    {
+      "imei": "imei_6543219870",
+      "iccid": "iccid_6543219870",
+      "model": "Testatron v2",
+      "manufacturer": "Roundhouse Surprise LLC"
+    },
+    {
+      "imei": "imei_2589631470",
+      "iccid": "iccid_2589631470",
+      "model": "Testatron v2",
+      "manufacturer": "Roundhouse Surprise LLC"
+    }
+  ],
+  "Subscriptions": [
+    {
+      "platform": "iSpy",
+      "platform_id": "sub_1234567890"
+    },
+    {
+      "platform": "iSpy",
+      "platform_id": "sub_9876543210"
+    },
+    {
+      "platform": "iSpy",
+      "platform_id": "sub_9638527410"
+    }
+  ]
+}

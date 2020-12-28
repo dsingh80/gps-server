@@ -41,7 +41,8 @@ module.exports.production = {
     log_path: "/var/logs/server",
     port: "8080",       // This is the port INSIDE the docker container. It must be mapped to a local network port to receive any data
     session_secret: "<my_super_secret_key>",
-    cookie_secret: "<my_super_secret_key>"
+    cookie_secret: "<my_super_secret_key>",
+    MAX_LOGIN_ATTEMPTS: 5
   }
 };
 
@@ -85,8 +86,9 @@ module.exports.development = {
   },
   server: {
     log_path: "/var/logs/server",
-    port: "8080",
+    port: "8443",
     session_secret: "test",
-    cookie_secret: "test"
+    cookie_secret: "test",
+    MAX_LOGIN_ATTEMPTS: 5
   }
 };
