@@ -1,7 +1,9 @@
 'use strict';
 
 const Collection = require('./Collection'),
+  Database = require('./Database'),
   SubscriptionSchema = require('../schemas/subscription'),
+  ClientSchema = require('../schemas/client'),
   utils = require('../utils');
 
 const ApplicationError = utils.ApplicationError,
@@ -24,25 +26,34 @@ class SubscriptionsCollection extends Collection {
       throw 'Attempt to initialize a SubscriptionsCollection without a mongoose connection object';
     }
     super();
+    connection.model('Client', ClientSchema);
     this.model = connection.model('Subscription', SubscriptionSchema);
   }
 
 
   /**
    * @method addSubscription
-   * @param {String} client_id
+   * @param {String} clientId
    * @param {String} platform
-   * @param {String} platform_id
+   * @param {String} platformId
+   * @param {String} name
+   * @param {Number} price
+   * @param {Number} chargeIntervalFrequency
+   * @param {String} chargeIntervalUnit - "day", "month", etc.
    * @param {Object=}additionalParams
    * @param {Function=} callback
    * @returns {Promise<Object>} - newly created document
    * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
    */
-  async addSubscription(client_id, platform, platform_id, additionalParams, callback) {
+  async addSubscription(clientId, platform, platformId, name, price, chargeIntervalFrequency, chargeIntervalUnit, additionalParams, callback) {
     const requiredParams = {
-      client_id: 'string',
+      clientId: 'string',
       platform: 'string',
-      platform_id: 'string'
+      platformId: 'string',
+      name: 'string',
+      price: 'number',
+      chargeIntervalFrequency: 'number',
+      chargeIntervalUnit: 'string'
     };
     const optionalParams = {
       additionalParams: 'object',
@@ -55,7 +66,7 @@ class SubscriptionsCollection extends Collection {
         reject(err);
         return;
       }
-      this.request(SubscriptionsCollection.prototype._addSubscription, [this, client_id, platform, platform_id, additionalParams], function(err, data) {
+      this.request(SubscriptionsCollection.prototype._addSubscription, [this, clientId, platform, platformId, name, price, chargeIntervalFrequency, chargeIntervalUnit, additionalParams], function(err, data) {
         if(callback) { callback(err, data); }
         if(err) { reject(err); }
         else { resolve(data); }
@@ -134,16 +145,16 @@ class SubscriptionsCollection extends Collection {
 
   /**
    * @method getSubscriptionsForClient
-   * @param {String} client_id
+   * @param {String} clientId
    * @param {Object=} select
    * @param {Object=} options
    * @param {Function=} callback
    * @returns {Promise<Object>}
    * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
    */
-  async getClientSubscriptions(client_id, select, options, callback) {
+  async getClientSubscriptions(clientId, select, options, callback) {
     const requiredParams = {
-      client_id: 'string'
+      clientId: 'string'
     };
     const optionalParams = {
       select: 'object',
@@ -158,7 +169,7 @@ class SubscriptionsCollection extends Collection {
         return;
       }
       let filter = {
-        'client_id': client_id
+        client: clientId
       };
       this.request(SubscriptionsCollection.prototype._listSubscriptions, [this, filter, select, options], function(err, data) {
         if(callback) { callback(err, data); }
@@ -170,7 +181,7 @@ class SubscriptionsCollection extends Collection {
 
 
   /**
-   * @method updateSubscription
+   * @method updateSubscriptionById
    * @param {String} id
    * @param {Object} updates
    * @param {Object=} options
@@ -178,9 +189,34 @@ class SubscriptionsCollection extends Collection {
    * @returns {Promise<Object>}
    * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
    */
-  async updateSubscription(id, updates, options, callback) {
+  async updateSubscriptionById(id, updates, options, callback) {
     const requiredParams = {
       id: 'string',
+      updates: 'object'
+    };
+    const optionalParams = {
+      options: 'object',
+      callback: 'function'
+    };
+    let filter = {
+      '_id': id
+    };
+    return this.updateSubscription(filter, updates, options, callback);
+  }
+
+
+  /**
+   * @method updateSubscription
+   * @param {Object} filter
+   * @param {Object} updates
+   * @param {Object=} options
+   * @param {Function=} callback
+   * @returns {Promise<Object>}
+   * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
+   */
+  async updateSubscription(filter, updates, options, callback) {
+    const requiredParams = {
+      filter: 'object',
       updates: 'object'
     };
     const optionalParams = {
@@ -194,9 +230,6 @@ class SubscriptionsCollection extends Collection {
         reject(err);
         return;
       }
-      let filter = {
-        '_id': ObjectId(id)
-      };
       this.request(SubscriptionsCollection.prototype._updateSubscription, [this, filter, updates, options], function(err, data) {
         if(callback) { callback(err, data); }
         if(err) { reject(err); }
@@ -245,82 +278,59 @@ class SubscriptionsCollection extends Collection {
 
   /**
    * @method activateSubscription
-   * @param {String} id
+   * @param {Object} filter
    * @param {Function=} callback
    * @returns {Promise<Object>}
    */
-  async activateSubscription(id, callback) {
+  async activateSubscription(filter, callback) {
     let updates = {
-      'status': 'active'
+      'activated': true
     };
-    return this.updateSubscription(id, updates, null, callback);
+    return this.updateSubscription(filter, updates, null, callback);
   }
 
 
   /**
    * @method deactivateSubscription
-   * @param {String} id
+   * @param {Object} filter
    * @param {Function=} callback
    * @returns {Promise<Object>}
    */
-  async deactivateSubscription(id, callback) {
+  async deactivateSubscription(filter, callback) {
     let updates = {
-      'status': 'inactive'
+      'activated': false
     };
-    return this.updateSubscription(id, updates, null, callback);
+    return this.updateSubscription(filter, updates, null, callback);
   }
 
 
   /**
    * @method getSubscriptionsPendingActivation
-   * @param {Object=} select
+   * @param {String} clientId
    * @param {Object=} options
+   * @param {Object=} select
    * @param {Function=} callback
    * @returns {Promise<Object>}
    */
-  async getSubscriptionsPendingActivation(select, options, callback) {
-    const paramTypes = {
+  async getSubscriptionsPendingActivation(clientId, select, options, callback) {
+    const requiredParams = {
+      clientId: 'string'
+    };
+    const optionalParams = {
+      select: 'object',
       options: 'object'
     };
+
     return new Promise((resolve, reject) => {
-      if(!utils.typeCheck(arguments, paramTypes)) {
+      if(!utils.typeCheck(arguments, requiredParams, true, false) || !utils.typeCheck(arguments, optionalParams)) {
         let err = new ApplicationError('Invalid params');
         if(callback) { callback(err); }
         reject(err);
         return;
       }
       let filter = {
-        'status': 'pending'
-      };
-      this.request(SubscriptionsCollection.prototype._listSubscriptions, [this, filter, select, options], function(err, data) {
-        if(callback) { callback(err, data); }
-        if(err) { reject(err); }
-        else { resolve(data); }
-      });
-    });
-  }
-
-
-  /**
-   * @method getInactiveSubscriptions
-   * @param {Object=} options
-   * @param {Object=} select
-   * @param {Function=} callback
-   * @returns {Promise<Object>}
-   */
-  async getInactiveSubscriptions(select, options, callback) {
-    const paramTypes = {
-      options: 'object'
-    };
-    return new Promise((resolve, reject) => {
-      if(!utils.typeCheck(arguments, paramTypes)) {
-        let err = new ApplicationError('Invalid params');
-        if(callback) { callback(err); }
-        reject(err);
-        return;
-      }
-      let filter = {
-        'status': 'inactive'
+        client: clientId,
+        activated: false
       };
       this.request(SubscriptionsCollection.prototype._listSubscriptions, [this, filter, select, options], function(err, data) {
         if(callback) { callback(err, data); }
@@ -333,24 +343,31 @@ class SubscriptionsCollection extends Collection {
 
   /**
    * @method getActiveSubscriptions
+   * @param {String} clientId
    * @param {Object=} select
    * @param {Object=} options
    * @param {Function=} callback
    * @returns {Promise<Object>}
    */
-  async getActiveSubscriptions(select, options, callback) {
-    const paramTypes = {
+  async getActiveSubscriptions(clientId, select, options, callback) {
+    const requiredParams = {
+      clientId: 'string'
+    };
+    const optionalParams = {
+      select: 'object',
       options: 'object'
     };
+
     return new Promise((resolve, reject) => {
-      if(!utils.typeCheck(arguments, paramTypes)) {
+      if(!utils.typeCheck(arguments, requiredParams, true, false) || !utils.typeCheck(arguments, optionalParams)) {
         let err = new ApplicationError('Invalid params');
         if(callback) { callback(err); }
         reject(err);
         return;
       }
       let filter = {
-        'status': 'active'
+        client: clientId,
+        activated: true
       };
       this.request(SubscriptionsCollection.prototype._listSubscriptions, [this, filter, select, options], function(err, data) {
         if(callback) { callback(err, data); }
@@ -366,18 +383,26 @@ class SubscriptionsCollection extends Collection {
 /**
  * @method _addSubscription
  * @param {Object} self - instantiated object of this class (included as a parameter because 'this' can be undefined for prototypes)
- * @param {String | ObjectId} client_id
+ * @param {String | ObjectId} clientId
  * @param {String} platform
- * @param {String} platform_id
+ * @param {String} platformId
+ * @param {String} name
+ * @param {Number} price
+ * @param {Number} chargeIntervalFrequency
+ * @param {String} chargeIntervalUnit - "day", "month", etc.
  * @param {Object=} additionalParams
  * @param {Function=} callback
  * @returns {Promise<Object>} - newly created document
  */
-SubscriptionsCollection.prototype._addSubscription = async function(self, client_id, platform, platform_id, additionalParams, callback) {
+SubscriptionsCollection.prototype._addSubscription = async function(self, clientId, platform, platformId, name, price, chargeIntervalFrequency, chargeIntervalUnit, additionalParams, callback) {
   let properties = {...additionalParams};
-  properties.client_id = client_id;
+  properties.client = clientId;
   properties.platform = platform;
-  properties.platform_id = platform_id;
+  properties.platform_id = platformId;
+  properties.name = name;
+  properties.price = price;
+  properties.charge_interval_frequency = chargeIntervalFrequency;
+  properties.charge_interval_unit = chargeIntervalUnit;
 
   let doc = new self.model(properties);
   doc.save()

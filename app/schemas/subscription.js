@@ -11,11 +11,17 @@ let options = {
 };
 
 let SubscriptionSchema = mongoose.Schema({
-  client_id: {
+  client: {
     type: mongoose.ObjectId,
     editable: false,
     required: true,
     ref: 'Client'
+  },
+  activated: {
+    type: Boolean,
+    default: false,
+    editable: true,
+    required: true
   },
   platform: {
     type: String,
@@ -35,12 +41,34 @@ let SubscriptionSchema = mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['active', 'pending', 'inactive'],
-    default: 'pending',
     editable: true,
     lowercase: true,
     trim: true,
     required: false
+  },
+  name: {
+    type: String,
+    editable: true,
+    trim: true,
+    required: true
+  },
+  price: {
+    type: Number,
+    editable: true,
+    required: true
+  },
+  charge_interval_frequency: {
+    type: Number,
+    editable: true,
+    min: 0,
+    required: true
+  },
+  charge_interval_unit: {
+    type: String,
+    editable: true,
+    lowercase: true,
+    trim: true,
+    required: true
   }
 }, options);
 

@@ -5,9 +5,7 @@ const mongoose = require('mongoose');
 const ClientsCollection = require('./ClientsCollection'),
   DevicesCollection = require('./DevicesCollection'),
   SubscriptionsCollection = require('./SubscriptionsCollection'),
-  WialonUsersCollection = require('./WialonUsersCollection'),
-  StripeCustomersCollection = require('./StripeCustomersCollection'),
-  WooCommerceCustomersCollection = require('./WooCommerceCustomersCollection');
+  WialonUsersCollection = require('./WialonUsersCollection');
 
 
 /**

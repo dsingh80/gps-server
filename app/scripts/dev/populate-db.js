@@ -72,7 +72,7 @@ async function populateDevices() {
     const data = dbData.Devices;
     let currIndex = 0;
     let addDoc = function(obj) {
-      Database.devices.addDevice(obj.imei, obj.iccid, obj.model, obj)
+      Database.devices.addDevice(obj.imei, obj.iccid, obj.model, obj.image_url, obj)
         .then()
         .catch((err) => {
           console.error('Failed to populate device', err);
@@ -100,7 +100,7 @@ async function populateSubscriptions(clientIds) {
     let currIndex = 0;
     let docIds = [];
     let addDoc = function(obj) {
-      Database.subscriptions.addSubscription(clientIds[clientIndex], obj.platform, obj.platform_id, obj)
+      Database.subscriptions.addSubscription(clientIds[clientIndex], obj.platform, obj.platform_id, obj.name, obj.price, obj.charge_interval_frequency, obj.charge_interval_unit, obj)
         .then((doc) => {
           docIds.push(doc._id);
           clientIndex++;

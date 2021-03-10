@@ -1,9 +1,58 @@
 extends layout.pug
 
+block header-stylesheets
+    link(rel='stylesheet' href='/assets/css/login.css')
+
+block header-scripts
+
+block navbar
+    include includes/navbar-login
+
 block content
-    form(action='/login' method='POST')
-        input(type='email' name='email' required='' autofocus='' tabindex=1)
-        input(type='password' name='password' required='' tabindex=2)
-        input(type='hidden' name='_csrf' required='' value=csrfToken)
-        p#error= err
-        button(type='submit') Login
+    #forms-wrapper.flex-row.d-inline-flex.justify-content-center
+        form#form-login.needs-validation.col-10.col-md-6.mx-auto(action='' method='POST' novalidate='')
+            h1.col-12.title.text-center Please, Login
+            .form-group.mb-3
+                label(for='email') E-mail:
+                input#email.form-control(name='email' type='email' aria-describedby='email-help' minlength='1' placeholder='johnsmith@gmail.com' required='' autofocus='')
+                .invalid-feedback
+                    | Invalid email address
+                small#email-help.form-text.text-muted
+                    | This is the email address you used to order one of our products.
+                    | If necessary, our support team can always help find it!
+            .form-group.mb-3
+                label(for='password') Password:
+                input#password.form-control(name='password' type='password' required='')
+                .invalid-feedback
+                    | Your password can be reset by clicking&nbsp;
+                    a.show-reset-password(href='') here
+            .error.text-center.invisible
+                p.message.text-danger.small
+                    | Invalid email/password combination. Please try again.
+                    | Your password can be reset by clicking&nbsp;
+                    a.show-reset-password(href='') here
+            button.btn.btn-lg.btn-primary.mb-3.w-100(type='submit') Login
+            p.text-center.text-muted.small
+                | Forgot your password?&nbsp;
+                a.show-reset-password(href='') Reset it here
+        form#form-reset-password.invisible.needs-validation.col-10.col-md-6.mx-auto(action='' method='POST' novalidate='')
+            a#hide-reset-password.d-block.mb-3(href='') &lt; Back to login
+            .form-group.mb-3
+                label(for='reset-password-email') E-mail:
+                input#reset-password-email.form-control(name='email' type='email' aria-describedby='email-help' minlength='1' placeholder='johnsmith@gmail.com' required='' autofocus='')
+                .invalid-feedback
+                    | Invalid email address
+                small#reset-password-email-help.form-text.text-muted
+                    | This is the email address you used to order one of our products.
+                    | If necessary, our support team can always help find it!
+            .error.text-center.invisible
+                p.message.text-danger.small
+                    | Failed to reset password. Please try again later or contact support for further assistance.
+                    | We apologize for the inconvenience
+            button.btn.btn-lg.btn-primary.mb-3.w-100(type='submit') Reset Password
+
+block footer-scripts
+    script(src='/assets/js/login.js')
+
+block footer
+    include includes/footer

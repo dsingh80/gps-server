@@ -1,0 +1,18 @@
+extends layout.pug
+
+block header-stylesheets
+    link(rel='stylesheet' href='/assets/css/home.css')
+
+block header-scripts
+
+
+block navbar
+    include includes/navbar
+
+block content
+    .row.my-3.my-sm-5.mx-auto
+        h1.text-muted Signing out...
+
+
+block footer-scripts
+    script(src='/assets/js/logout.js')

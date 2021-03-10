@@ -1,0 +1,56 @@
+extends layout.pug
+
+block header-stylesheets
+    link(rel='stylesheet' href='/assets/css/profile.css')
+
+block header-scripts
+
+
+block navbar
+    include includes/navbar
+
+block content
+    .row.mt-3
+        .title-wrapper.col-12.text-center
+            h1.title.text-uppercase My Profile
+            h2.subtitle View/update your contact information
+    hr
+    #profile-wrapper.row.my-1.mx-auto
+        form#form-profile.col.needs-validation.disabled(target='_blank' action='')
+            .row
+                .col
+                    label(for='profile-first-name') First name
+                    input#profile-first-name.form-control(type='text' name='firstName' value=client.first_name required='' disabled='')
+                .w-100.d-md-none
+                    // divider on small screens
+                .col
+                    label(for='profile-last-name') Last name
+                    input#profile-last-name.form-control(type='text' name='lastName' value=client.last_name required='' disabled='')
+            div
+                label(for='profile-email') Email
+                input#profile-email.form-control(type='email' name='email' value=client.email aria-describedby='profile-email-help' placeholder='johnsmith@gmail.com' required='' disabled='')
+                small#profile-email-help.help-text.text-primary Your new email address must be used for any future logins.
+            div
+                label(for='profile-phone') Phone
+                input#profile-phone.form-control(type='tel' name='phoneNumber' value=client.phone placeholder='(123) 456-7890' disabled='')
+            .mt-3
+                button.btn.btn-primary.btn-lg(type='submit') Update
+                .error.mt-3.invisible
+                    p.message.text-danger &times;
+        .w-100.d-md-none
+            // divider on small screens
+        .col.text-left.text-md-right
+            label.font-weight-normal.text-uppercase Additional options
+            hr.mt-2
+            .mt-1.text-md-right
+                p.mb-0
+                    a(href='#modal-change-password' data-toggle='modal') Change password
+
+    include includes/modal-change-password
+
+
+block footer-scripts
+    script(src='/assets/js/profile.js')
+
+block footer
+    include includes/footer

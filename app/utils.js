@@ -35,7 +35,7 @@ module.exports.requireUncached = function(module) {
  * @param {Object} obj
  * @param {Object} types - key-value pairing of the given object's properties to their relative types (returned by typeof)
  * @param {Boolean} requireNotNull - if any value is null, this will return false
- * @param {Boolean} strictObjectFormat - if any key in the types object is not defined in obj, this will return false
+ * @param {Boolean} strictObjectFormat - if any key in the types object is not defined in obj or some unrecognized key is present, this will return false
  * @returns {Boolean}
  * @description Validate data types for properties of an object
  */
@@ -74,22 +74,22 @@ module.exports.typeCheck = function(obj, types, requireNotNull=false, strictObje
 /**
  * @function buildPayload
  * @param {RequestStatus|RequestStatus} status
- * @param {String=} errorMessage
+ * @param {Object=} error
  * @param {Object=} data
  * @returns {Object}
  * @description
  * Used to build payloads to send to client
  * This function exists because we want to guarantee that every payload is sent with a consistent format
  */
-module.exports.buildPayload = function(status, errorMessage, data) {
-  if(!status && !errorMessage && !data) {
+module.exports.buildPayload = function(status, error, data) {
+  if(!status && !error && !data) {
     throw 'Attempt to build response payload without any parameters';
   }
   let payload = {
     status: status
   };
-  if(errorMessage) {
-    payload.errorMessage = errorMessage;
+  if(error) {
+    payload.error = error;
   }
   if(data) {
     payload.data = data;
@@ -119,4 +119,53 @@ module.exports.ApplicationError = function(message, additionalParams={}) {
   err.message = message;
   Object.keys(additionalParams).forEach((key) => err[key] = additionalParams[key]);
   return err;
+}
+
+
+/**
+ * @function verifySubscriptionOwnership
+ * @param req
+ * @param res
+ * @param next
+ * @description Routing middleware
+ */
+module.exports.verifySubscriptionOwnership = function(req, res, next) {
+  let input = req.body;
+  let filter = {
+    platform: input.platform,
+    platform_id: input.subscriptionId,
+    client: req.session.clientId
+  };
+  require('./classes/Database').subscriptions.getSubscription(filter)
+    .then((subscription) => {
+      res.locals.subscription = subscription;
+      next();
+    })
+    .catch((err) => {
+      res.status(400).json(module.exports.buildPayload(module.exports.RequestStatus.FAIL, 'Invalid subscription. Have you already activated this device?'));
+    });
+}
+
+
+/**
+ * @function verifySubscriptionOwnershipById
+ * @param req
+ * @param res
+ * @param next
+ * @description Routing middleware
+ */
+module.exports.verifySubscriptionOwnershipById = function(req, res, next) {
+  let input = req.body;
+  let filter = {
+    _id: input.subscriptionId,
+    client: req.session.clientId
+  };
+  require('./classes/Database').subscriptions.getSubscription(filter)
+    .then((subscription) => {
+      res.locals.subscription = subscription;
+      next();
+    })
+    .catch((err) => {
+      res.status(400).json(module.exports.buildPayload(module.exports.RequestStatus.FAIL, 'Invalid subscription. Have you already activated this device?'));
+    });
 }

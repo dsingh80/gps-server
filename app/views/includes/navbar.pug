@@ -1,0 +1,22 @@
+section#header.container-fluid.position-relative.mb-5
+    .container.row.mx-auto.p-2.p-sm-4
+        #logo-wrapper.col.col-sm-4.col-lg-2
+            a(href='/portal')
+                img.w-100(src='/assets/images/Primetracking_Logo.svg' alt='Logo')
+        .d-none.d-sm-grid.col-12.col-sm-8.col-lg-10
+            ul.nav.flex-sm-row.flex-column.justify-content-center.justify-content-sm-end
+                li.nav-item
+                    a.nav-link(href='/portal/profile')
+                        i.fas.fa-user.me-1
+                        | My Profile
+                li.nav-item
+                    a.nav-link(href='/portal/logout')
+                        i.fas.fa-sign-out-alt.me-1
+                        | Logout
+        .d-grid.d-sm-none.col.justify-content-end
+            #mobile-nav.dropdown
+                a.text-primary.font-weight-bold(role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+                    i.fas.fa-bars
+                .dropdown-menu.w-100.d-block.m-0(aria-labelledby='dropdownMenuButton')
+                    a.dropdown-item(href='/portal/profile') Profile
+                    a.dropdown-item(href='/portal/logout') Logout

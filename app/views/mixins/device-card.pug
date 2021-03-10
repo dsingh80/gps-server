@@ -1,0 +1,13 @@
+mixin deviceCard(device)
+    .device-wrapper.h-100.col.mw-lg-50.my-2.mx-0.mx-lg-2.p-4.row
+        .col-12.col-sm-6.pb-3.pb-sm-0
+            a(href=`/portal/device/${device._id}`)
+                img.w-100(src=device.image_url alt='PrimeTracking GPS')
+        .device-properties.col-12.col-sm-6
+            h3.device-title= device.nickname || device.model
+            ul
+                li.property-name Renews Every
+                li #{device.subscription.charge_interval_frequency} #{device.subscription.charge_interval_unit}
+                li.property-name IMEI
+                li= device.imei
+            a(href=`/portal/device/${device._id}`) Manage Device &gt;

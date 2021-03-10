@@ -6,8 +6,7 @@
  */
 'use strict';
 
-const router = require('express').Router(),
-  csurf = require('csurf');
+const router = require('express').Router();
 
 const utils = require('../utils'),
   Database = require('../classes/Database');
@@ -15,9 +14,8 @@ const utils = require('../utils'),
 /**
  * Route Definitions
  */
-router.get('/login', renderLoginForm);
-router.post('/login', validateLoginInput, authenticateUser, renderLoginError);
-router.get('/logout', cleanUpSession, redirectToLogin);
+router.get('/', renderLoginForm);
+router.post('/', validateLoginInput, authenticateUser);
 
 
 /**
@@ -28,7 +26,7 @@ router.get('/logout', cleanUpSession, redirectToLogin);
  * =========================================
  */
 function renderLoginForm(req, res) {
-  if(req.session.client_id) {
+  if(req.session.clientId) {
     res.redirect('/portal');
     return;
   }
@@ -40,7 +38,7 @@ function renderLoginForm(req, res) {
 
 
 function validateLoginInput(req, res, next) {
-  if(req.session.client_id) {
+  if(req.session.clientId) {
     res.redirect('/portal');
     return;
   }
@@ -67,38 +65,13 @@ function authenticateUser(req, res, next) {
   let input = req.body;
   Database.clients.authenticate(input.email, input.password)
     .then((doc) => {
-          req.session.client_id = doc._id;
+          req.session.clientId = doc._id;
           res.redirect('/portal');
     })
     .catch((err) => {
-      req.session.err = err.message;
-      next();
+      res.status(400).json(utils.buildPayload(utils.RequestStatus.FAIL, err));
     });
 }
 
-
-function renderLoginError(req, res) {
-  let renderData = {
-    csrfToken: req.body._csrf || req.csrfToken(),
-    err: req.session.err || 'Invalid login credentials. Please check your input'
-  };
-  res.render('login', renderData);
-}
-
-
-function cleanUpSession(req, res, next) {
-  req.session.destroy(function(err) {
-    if(err) {
-      res.status(400).send(utils.buildPayload(utils.RequestStatus.FAIL, 'Unable to end session'));
-      return;
-    }
-    next();
-  });
-}
-
-
-function redirectToLogin(req, res) {
-  res.redirect('/login');
-}
 
 module.exports = router;

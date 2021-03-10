@@ -11,7 +11,7 @@ let options = {
 };
 
 let WialonUserSchema = mongoose.Schema({
-  client_id: {
+  client: {
     type: mongoose.ObjectId,
     editable: false,
     required: true,

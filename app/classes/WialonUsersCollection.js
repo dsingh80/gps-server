@@ -2,6 +2,7 @@
 
 const Collection = require('./Collection'),
   WialonUserSchema = require('../schemas/wialon_user'),
+  ClientSchema = require('../schemas/client'),
   utils = require('../utils');
 
 const ApplicationError = utils.ApplicationError,
@@ -24,13 +25,14 @@ class WialonUsersCollection extends Collection {
       throw 'Attempt to initialize a WialonUsersCollection without a mongoose connection object';
     }
     super();
+    connection.model('Client', ClientSchema);
     this.model = connection.model('WialonUser', WialonUserSchema);
   }
 
 
   /**
    * @method addWialonUser
-   * @param {String} client_id
+   * @param {String} clientId
    * @param {String} wialon_user_id
    * @param {String} wialon_account_id
    * @param {Object=}additionalParams
@@ -38,9 +40,9 @@ class WialonUsersCollection extends Collection {
    * @returns {Promise<Object>} - newly created document
    * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
    */
-  async addWialonUser(client_id, wialon_user_id, wialon_account_id, additionalParams, callback) {
+  async addWialonUser(clientId, wialon_user_id, wialon_account_id, additionalParams, callback) {
     const requiredParams = {
-      client_id: 'string',
+      clientId: 'string',
       wialon_user_id: 'string',
       wialon_account_id: 'string'
     };
@@ -55,7 +57,7 @@ class WialonUsersCollection extends Collection {
         reject(err);
         return;
       }
-      this.request(WialonUsersCollection.prototype._addWialonUser, [this, client_id, wialon_user_id, wialon_account_id, additionalParams], function(err, data) {
+      this.request(WialonUsersCollection.prototype._addWialonUser, [this, clientId, wialon_user_id, wialon_account_id, additionalParams], function(err, data) {
         if(callback) { callback(err, data); }
         if(err) { reject(err); }
         else { resolve(data); }
@@ -174,16 +176,16 @@ class WialonUsersCollection extends Collection {
 /**
  * @method _addWialonUser
  * @param {Object} self - instantiated object of this class (included as a parameter because 'this' can be undefined for prototypes)
- * @param {String | ObjectId} client_id
+ * @param {String | ObjectId} clientId
  * @param {String} wialon_user_id
  * @param {String} wialon_account_id
  * @param {Object=} additionalParams
  * @param {Function=} callback
  * @returns {Promise<Object>} - newly created document
  */
-WialonUsersCollection.prototype._addWialonUser = async function(self, client_id, wialon_user_id, wialon_account_id, additionalParams, callback) {
+WialonUsersCollection.prototype._addWialonUser = async function(self, clientId, wialon_user_id, wialon_account_id, additionalParams, callback) {
   let properties = {...additionalParams};
-  properties.client_id = client_id;
+  properties.client = clientId;
   properties.wialon_user_id = wialon_user_id;
   properties.wialon_account_id = wialon_account_id;
 

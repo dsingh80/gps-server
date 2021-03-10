@@ -22,8 +22,6 @@ class Database {
     this.DevicesCollection = null;
     this.SubscriptionsCollection = null;
     this.WialonUsersCollection = null;
-    this.StripeCustomersCollection = null;
-    this.WooCommerceCustomersCollection = null;
     this.__collectionFactory = new CollectionFactory(dbConfig);
     this.__dbConfig = dbConfig;
   }
@@ -49,12 +47,6 @@ class Database {
     if (this.WialonUsersCollection == null) {
       this.WialonUsersCollection = await this.__collectionFactory.getWialonUsersCollection();
     }
-    if (this.StripeCustomersCollection == null) {
-      this.StripeCustomersCollection = await this.__collectionFactory.getStripeCustomersCollection();
-    }
-    if (this.WooCommerceCustomersCollection == null) {
-      this.WooCommerceCustomersCollection = await this.__collectionFactory.getWooCommerceCustomersCollection();
-    }
     return this;
   }
 
@@ -70,8 +62,6 @@ class Database {
     this.DevicesCollection = null;
     this.SubscriptionsCollection = null;
     this.WialonUsersCollection = null;
-    this.StripeCustomersCollection = null;
-    this.WooCommerceCustomersCollection = null;
     return promise;
   }
 
@@ -109,22 +99,6 @@ class Database {
 
 
   /**
-   * @type {WialonUsersCollection} stripeCustomers
-   */
-  get stripeCustomers() {
-    return this.getStripeCustomersCollection();
-  }
-
-
-  /**
-   * @type {WialonUsersCollection} wcCustomers
-   */
-  get wcCustomers() {
-    return this.getWCCustomersCollection();
-  }
-
-
-  /**
    * @method getClientsCollection
    */
   getClientsCollection() {
@@ -153,22 +127,6 @@ class Database {
    */
   getWialonUsersCollection() {
     return this.WialonUsersCollection;
-  }
-
-
-  /**
-   * @method getStripeCustomersCollection
-   */
-  getStripeCustomersCollection() {
-    return this.StripeCustomersCollection;
-  }
-
-
-  /**
-   * @method getWCCustomersCollection
-   */
-  getWCCustomersCollection() {
-    return this.WooCommerceCustomersCollection;
   }
 
 }

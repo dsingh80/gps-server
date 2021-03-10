@@ -72,7 +72,7 @@ let ClientSchema = mongoose.Schema({
   first_name: {
     type: String,
     editable: true,
-    lowercase: true,
+    lowercase: false,
     select: true,
     trim: true,
     required: false
@@ -80,7 +80,7 @@ let ClientSchema = mongoose.Schema({
   last_name: {
     type: String,
     editable: true,
-    lowercase: true,
+    lowercase: false,
     select: true,
     trim: true,
     required: false

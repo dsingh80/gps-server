@@ -1,0 +1,55 @@
+#btn-activate-device {
+    line-height: 1.5em;
+    font-size: 1.3em;
+}
+.notification {
+    background-color: #5014e6;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.48);
+}
+
+/* Device Card */
+.device-wrapper {
+    border: solid 1px rgba(0, 0, 0, .14);
+    border-radius: .5em;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .14);
+}
+.device-properties {
+    font-size: 1.2em;
+}
+.device-title {
+    font-size: calc(1.3em + .6vw); /* Bootstrap default for h3 */
+    font-weight: 600;
+}
+li.property-name {
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: -.3em;
+}
+.device-properties > a {
+    text-transform: uppercase;
+    font-size: .9em;
+}
+
+/* ==========================================================================
+   Media Queries
+   ========================================================================== */
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+    .device-properties {
+        text-align: right;
+        font-size: 1.4em;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {  }
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .device-properties {
+        font-size: 1em;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {  }

@@ -1,0 +1,37 @@
+extends layout.pug
+include mixins/device-card.pug
+
+block header-stylesheets
+    link(rel='stylesheet' href='/assets/css/home.css')
+
+block header-scripts
+    // StripeJS
+    script(src='https://js.stripe.com/v3/')
+
+block navbar
+    include includes/navbar
+
+block content
+    if subscriptionsPendingActivation && subscriptionsPendingActivation.length > 0
+      include includes/notification-pending-activation
+
+    .row.mt-3
+        .title-wrapper.col-12.text-center
+            h1.title.text-uppercase My Devices
+            h2.subtitle Add new devices, change your service and more!
+    .row.py-3.py-sm-5.mx-auto
+      if devices
+        each deviceData in devices
+            +deviceCard(deviceData)
+            .w-100.d-lg-none
+                // divider on small screens
+        if devices.length == 0
+          p.text-monospace.text-center.text-black-50 It looks like you don't have any active devices!&nbsp;
+            a(href="https://primetracking.com/pages/products") Get tracking today!
+    include includes/modal-activate-device
+
+block footer-scripts
+    script(src='/assets/js/home.js')
+
+block footer
+    include includes/footer

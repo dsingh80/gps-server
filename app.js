@@ -34,6 +34,7 @@ if (process.env.NODE_ENV == 'development') {
   _services = config.development;
 }
 else _services = config.production;
+app.set('config', _services.server);
 
 const sessionStore = new MongoSessionStore(_services.mongodb.Sessions);
 sessionStore.on('connected', function() {

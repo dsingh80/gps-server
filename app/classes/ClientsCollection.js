@@ -72,6 +72,40 @@ class ClientsCollection extends Collection {
 
   /**
    * @method getClient
+   * @param {Object} filter
+   * @param {Object=} select
+   * @param {Object=} options
+   * @param {Function=} callback
+   * @returns {Promise<Object>}
+   * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
+   */
+  async getClient(filter, select, options, callback) {
+    const requiredParams = {
+      filter: 'object',
+    };
+    const optionalParams = {
+      select: 'object',
+      options: 'object',
+      callback: 'function'
+    };
+    return new Promise((resolve, reject) => {
+      if(!utils.typeCheck(arguments, requiredParams, true, false) || !utils.typeCheck(arguments, optionalParams)) {
+        let err = new ApplicationError('Invalid params');
+        if(callback) { callback(err); }
+        reject(err);
+        return;
+      }
+      this.request(ClientsCollection.prototype._getClient, [this, filter, select, options], function(err, data) {
+        if(callback) { callback(err, data); }
+        if(err) { reject(err); }
+        else { resolve(data); }
+      });
+    });
+  }
+
+
+  /**
+   * @method getClientById
    * @param {String} id
    * @param {Object=} select
    * @param {Object=} options
@@ -79,7 +113,7 @@ class ClientsCollection extends Collection {
    * @returns {Promise<Object>}
    * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
    */
-  async getClient(id, select, options, callback) {
+  async getClientById(id, select, options, callback) {
     const requiredParams = {
       id: 'string',
     };
@@ -175,6 +209,40 @@ class ClientsCollection extends Collection {
 
   /**
    * @method updateClient
+   * @param {Object} filter
+   * @param {Object} updates
+   * @param {Object=} options
+   * @param {Function=} callback
+   * @returns {Promise<Object>}
+   * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
+   */
+  async updateClient(filter, updates, options, callback) {
+    const requiredParams = {
+      filter: 'object',
+      updates: 'object'
+    };
+    const optionalParams = {
+      options: 'object',
+      callback: 'function'
+    };
+    return new Promise((resolve, reject) => {
+      if(!utils.typeCheck(arguments, requiredParams, true, false) || !utils.typeCheck(arguments, optionalParams)) {
+        let err = new ApplicationError('Invalid params');
+        if(callback) { callback(err); }
+        reject(err);
+        return;
+      }
+      this.request(ClientsCollection.prototype._updateClient, [this, filter, updates, options], function(err, data) {
+        if(callback) { callback(err, data); }
+        if(err) { reject(err); }
+        else { resolve(data); }
+      });
+    });
+  }
+
+
+  /**
+   * @method updateClientById
    * @param {String} id
    * @param {Object} updates
    * @param {Object=} options
@@ -182,7 +250,7 @@ class ClientsCollection extends Collection {
    * @returns {Promise<Object>}
    * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
    */
-  async updateClient(id, updates, options, callback) {
+  async updateClientById(id, updates, options, callback) {
     const requiredParams = {
       id: 'string',
       updates: 'object'
@@ -283,6 +351,45 @@ class ClientsCollection extends Collection {
     });
   }
 
+
+
+
+  /**
+   * @method updatePassword
+   * @param {String} id
+   * @param {String} newPassword
+   * @param {Object=} options
+   * @param {Function=} callback
+   * @returns {Promise<Object>}
+   * @description Proxy for the related internal function. This method adds the request to a Queue instead of running right away
+   */
+  async updatePassword(id, newPassword, options, callback) {
+    const requiredParams = {
+      id: 'string',
+      newPassword: 'string'
+    };
+    const optionalParams = {
+      options: 'object',
+      callback: 'function'
+    };
+    return new Promise((resolve, reject) => {
+      if(!utils.typeCheck(arguments, requiredParams, true, false) || !utils.typeCheck(arguments, optionalParams)) {
+        let err = new ApplicationError('Invalid params');
+        if(callback) { callback(err); }
+        reject(err);
+        return;
+      }
+      let filter = {
+        '_id': id
+      };
+      this.request(ClientsCollection.prototype._updatePassword, [this, filter, newPassword, options], function(err, data) {
+        if(callback) { callback(err, data); }
+        if(err) { reject(err); }
+        else { resolve(data); }
+      });
+    });
+  }
+
 }
 
 
@@ -317,6 +424,33 @@ ClientsCollection.prototype._addClient = async function(self, email, additionalP
     .then((obj) => callback(null, obj))
     .catch((err) => callback(err));
 }
+
+
+/**
+ * @protected
+ * @method _updatePassword
+ * @param {Object} self - instantiated object of this class (included as a parameter because 'this' can be undefined for prototypes)
+ * @param {Object} filter
+ * @param {String} newPassword
+ * @param {Object=} options
+ * @param {Function} callback - function/method to call when finished; function(err, data);
+ */
+ClientsCollection.prototype._updatePassword = async function(self, filter, newPassword, options, callback) {
+  filter = filter || {};
+  let select = {
+    email: true,
+    password: true,
+    salt: true
+  };
+  options = options || {};
+
+  self.__findOne(self, filter, select, options, function(err, doc) {
+    if(err) { return callback(err); }
+    doc.setPassword(newPassword)
+      .then((doc) => callback(null, doc))
+      .catch((err) => callback(err));
+  });
+};
 
 
 /**

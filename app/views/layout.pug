@@ -1,12 +1,58 @@
+doctype html
+<!--[if lt IE 7]>
+html.no-js.lt-ie9.lt-ie8.lt-ie7
+<![endif]-->
+<!--[if IE 7]>
+html.no-js.lt-ie9.lt-ie8
+<![endif]-->
+<!--[if IE 8]>
+html.no-js.lt-ie9
+<![endif]-->
+<!--[if gt IE 8]>
+html.no-js
+<![endif]-->
 html
     head
-        title PrimeTracking | Secure & Safe GPS Tracking Technology
-
-        link(href='/assets/css/normalize.min.css' rel='stylesheet')
-        link(href='/assets/css/index.css' rel='stylesheet')
-
-        block header-content
-
+        meta(charset='utf-8')
+        meta(http-equiv='X-UA-Compatible' content='IE=edge')
+        title PrimeTracking | Secure &amp; Safe GPS Tracking Technology
+        meta(name='description' content='')
+        meta(name='viewport' content='width=device-width, initial-scale=1')
+        if csrfToken
+            meta(name='_csrf' content=csrfToken)
+        link(rel='stylesheet' href='/assets/css/bootstrap.min.css')
+        link(rel='stylesheet' href='/assets/css/fontawesome.min.css')
+        link(rel='stylesheet' href='/assets/css/fontawesome.solid.min.css')
+        link(rel='stylesheet' href='/assets/css/index.css')
+        block header-stylesheets
+        script(src='/assets/js/utils.js')
+        block header-scripts
     body
-        block content
+        <!--[if lt IE 7]>
+        p.browsehappy
+            | You are using an
+            strong outdated
+            |  browser. Please
+            a(href='#')  upgrade your browser
+            |     to improve your experience.
+        <![endif]-->
+
+
+        block navbar
+
+        section#body.container
+            block content
+
+        // Optional JavaScript
+        // jQuery first, then Popper.js, then Bootstrap JS
+        //    jQuery
+        script(src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous')
+        //    PopperJS
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js' integrity='sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49' crossorigin='anonymous')
+        //    Bootstrap
+        script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js' integrity='sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy' crossorigin='anonymous')
+        script(src='/assets/js/interactions.js')
+
+        block footer-scripts
+
         block footer

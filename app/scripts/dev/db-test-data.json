@@ -17,42 +17,59 @@
   ],
   "Devices": [
     {
-      "imei": "imei_1234567890",
+      "imei": "123456789012345",
       "iccid": "iccid_124567890",
+      "nickname": "SafeTrack GPS",
       "model": "Testatron",
-      "manufacturer": "Dom's Backyard Grotto"
+      "manufacturer": "Dom's Backyard Grotto",
+      "image_url": "/assets/images/PrimeTracking_GPS.jpg"
     },
     {
-      "imei": "imei_9876543210",
+      "imei": "987654321098765",
       "iccid": "iccid_9876543210",
       "model": "Testatron",
-      "manufacturer": "Dom's Backyard Grotto"
+      "manufacturer": "Dom's Backyard Grotto",
+      "image_url": "/assets/images/PrimeTracking_OBD.jpg"
     },
     {
-      "imei": "imei_6543219870",
+      "imei": "654321098765432",
       "iccid": "iccid_6543219870",
       "model": "Testatron v2",
-      "manufacturer": "Roundhouse Surprise LLC"
+      "manufacturer": "Roundhouse Surprise LLC",
+      "image_url": "http://image_url"
     },
     {
-      "imei": "imei_2589631470",
+      "imei": "258963147025896",
       "iccid": "iccid_2589631470",
       "model": "Testatron v2",
-      "manufacturer": "Roundhouse Surprise LLC"
+      "manufacturer": "Roundhouse Surprise LLC",
+      "image_url": "http://image_url"
     }
   ],
   "Subscriptions": [
     {
       "platform": "iSpy",
-      "platform_id": "sub_1234567890"
+      "platform_id": "sub_1234567890",
+      "name": "Monthly - $24.97/mo (w/ 10-day trial)",
+      "price": 24.97,
+      "charge_interval_frequency": 30,
+      "charge_interval_unit": "Days"
     },
     {
       "platform": "iSpy",
-      "platform_id": "sub_9876543210"
+      "platform_id": "sub_9876543210",
+      "name": "Annual subscription (w/ 10-day trial)",
+      "price": 204.00,
+      "charge_interval_frequency": "12",
+      "charge_interval_unit": "months"
     },
     {
       "platform": "iSpy",
-      "platform_id": "sub_9638527410"
+      "platform_id": "sub_9638527410",
+      "name": "6-month subscription plan",
+      "price": "119.99",
+      "charge_interval_frequency": 6,
+      "charge_interval_unit": "MONTHs"
     }
   ]
 }

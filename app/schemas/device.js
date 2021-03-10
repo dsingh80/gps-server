@@ -11,12 +11,19 @@ let options = {
 };
 
 let DeviceSchema = mongoose.Schema({
-  subscription_id: {
+  subscription: {
     type: mongoose.ObjectId,
     editable: true,
     index: true,
     required: false,
     ref: 'Subscription'
+  },
+  client: {
+    type: mongoose.ObjectId,
+    editable: true,
+    index: true,
+    required: false,
+    ref: 'Client'
   },
   imei: {
     type: String,
@@ -32,6 +39,21 @@ let DeviceSchema = mongoose.Schema({
     unique: true,
     required: false // We may not always create a device with a known SIM card number
   },
+  nickname: {
+    type: String,
+    editable: true,
+    uppercase: false,
+    trim: true,
+    required: false
+  },
+  image_url: {
+    type: String,
+    default: '',
+    editable: true,
+    lowercase: true,
+    trim: true,
+    required: true
+  },
   model: {
     type: String,
     editable: true,
@@ -43,29 +65,6 @@ let DeviceSchema = mongoose.Schema({
     type: String,
     editable: true,
     uppercase: true,
-    trim: true,
-    required: false
-  },
-  platform: {
-    type: String,
-    editable: true,
-    lowercase: true,
-    trim: true,
-    required: false
-  },
-  platform_id: {    // This functions as our id for the device. There's a virtual getter on id that will return this value
-    type: String,
-    alias: 'id',
-    editable: false,
-    lowercase: true,
-    trim: true,
-    index: true,
-    required: false
-  },
-  status: {
-    type: String,
-    editable: true,
-    lowercase: true,
     trim: true,
     required: false
   },

@@ -1,0 +1,97 @@
+extends layout.pug
+include mixins/modal-cancel-subscription
+include mixins/modal-change-autopay
+
+block header-stylesheets
+    link(rel='stylesheet' href='/assets/css/manage-device.css')
+
+block header-scripts
+    // Stripe.js
+    script(src='https://js.stripe.com/v3/')
+
+block navbar
+    include includes/navbar
+
+block content
+    // Title
+    .row
+        .title-wrapper.col-12.col-md-8.mb-1
+            h1.title.text-center.text-md-left= device.nickname || device.model
+    // Device
+    .row.my-3.my-md-5.mx-auto
+        .col
+            img.w-100(src=device.image_url alt=device.model)
+        .w-100.d-md-none
+            // divider on small screens
+        #details-wrapper.col
+            h2.title.mt-5.mt-md-0 Service Info
+            hr.mb-0
+            .row
+                .col
+                    label#device-plan-name= device.subscription.name
+                    p#device-plan-price $#{device.subscription.price}
+                .w-100.d-lg-none
+                    // divider on small screens
+                .col.text-lg-right
+                    label Renews every
+                    p#device-plan-renewal-period #{device.subscription.charge_interval_frequency} #{device.subscription.charge_interval_unit}
+            .row
+                .col
+                    label Your Service Includes:
+                    ul.plan-includes.mt-2
+                        li Real-time notifications
+                        li Wireless 4G LTE
+                        li FREE Mobile App on iOS/Android
+                        li 24/7 Customer Service
+                .w-100.d-lg-none
+                    // divider on small screens
+                .col.mt-1.text-lg-right
+                    p.mb-0
+                        a(href='#modal-payment-method' data-toggle='modal') Change payment method
+                    p.mb-0
+                        a(href='#modal-cancel-subscription' data-toggle='modal') Cancel my subscription
+            .row
+                p#our-foundation.mt-4
+                    | Our foundational idea has always been to provide the highest quality of safety and peace of mind to our customers.
+                    span(style='color:#5014e6')
+                        | To do that, our devices need a service plan to run on the fastest networks available.
+                    |                 If you have any questions about your plan or PrimeTracking&apos;s dedication to it&apos;s customers,
+                    // <br />
+                    | contact us at
+                    span.text-nowrap
+                        a(href='tel:18002971320' style='text-decoration: none')  1(800) 297-1320
+                    |                 or
+                    |                 email us at
+                    span.text-nowrap
+                        a(href='mailto:support@myprimetracking.com' style='text-decoration: none')  support@myprimetracking.com
+                    | !
+            h2.title Device Info
+            hr.mb-0
+            table.table.table-sm
+                tr
+                    th(scope='row') Status
+                    td.text-right.text-nowrap
+                        if device.error_code
+                            span.status-bubble.status-red.mx-2
+                            | Error #{device.error_code}. Please contact support
+                        else
+                            if device.num_network_checks == 0
+                                span.status-bubble.status-yellow.mx-2
+                                | Pending activation
+                            else
+                                span.status-bubble.status-green.mx-2
+                                | Active
+                tr
+                    th(scope='row') IMEI
+                    td.text-right= device.imei
+
+    +modalChangeAutopay(device.subscription)
+    +modalCancelSubscription(device.subscription)
+
+
+
+block footer-scripts
+    script(src='/assets/js/device.js')
+
+block footer
+    include includes/footer

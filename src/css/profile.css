@@ -1,0 +1,56 @@
+#profile-wrapper label {
+    font-size: 1em;
+    font-weight: 700;
+    line-height: .8em;
+}
+#profile-wrapper label + p,
+#profile-wrapper label + input
+{
+    font-size: 1.2em;
+    margin-top: .1em;
+}
+#form-profile input {
+    display: block;
+    transition: border-bottom-color .2s ease-in,
+                border-bottom-width .1s ease-out;
+}
+#form-profile:not(.was-validated) input {
+    background: none;
+    border: none;
+    border-bottom-style: solid;
+    border-bottom-color: rgba(0,0,0,.14);
+    border-bottom-width: 1px;
+}
+#form-profile input:disabled {
+    pointer-events: none;
+    border-bottom-width: 0;
+    border-bottom-color: rgba(0,0,0,0);
+}
+#form-profile.disabled [type=submit] {
+    display: none;
+}
+#form-profile .help-text {
+    transition: opacity .1s ease-out,
+                height .2s ease-out;
+}
+#form-profile.disabled .help-text {
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+}
+
+/*#form-profile.disabled input:-webkit-autofill,*/
+/*#form-profile.disabled textarea:-webkit-autofill,*/
+/*#form-profile.disabled select:-webkit-autofill {*/
+/*    background-color: transparent !important;*/
+/*    -webkit-animation-delay: 1s; !* Safari support - any positive time runs instantly *!*/
+/*    -webkit-animation-name: autofill;*/
+/*    -webkit-animation-fill-mode: both;*/
+/*}*/
+
+/*@-webkit-keyframes autofill-transparent {*/
+/*    0%,100% {*/
+/*        background: transparent;*/
+/*    }*/
+/*}*/

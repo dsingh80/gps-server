@@ -1,0 +1,30 @@
+mixin modalCancelSubscription(subscription)
+    #modal-cancel-subscription.modal.fade(tabindex='-1' role='dialog' aria-hidden='true')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    h5.modal-title Are you sure?
+                    button.close.bg-transparent(type='button' data-dismiss='modal' aria-label='Close')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                    form#form-cancel-subscription(target='_blank' action='')
+                        input(type='hidden' name='subscriptionId' value=subscription._id required='')
+                        .form-group
+                            p.text-danger
+                                | By cancelling your subscription, your device will stop working&nbsp;
+                                span.text-decoration-underline immediately.
+                                |  Any tracking history related to the device will also be&nbsp;
+                                span.text-decoration-underline permanently wiped.
+                            .form-check
+                                input#understand-cancel-consequences.form-check-input(name='understandCancelConsequences' type='checkbox' required='' autofocus='')
+                                label.form-check-label(for='understand-cancel-consequences') I understand and accept the consequences of cancelling my subscription.
+                        // Error Message
+                        .error.small.my-3.text-center(role='alert')
+                            svg.mt-1.me-3(xmlns='http://www.w3.org/2000/svg' width='17' height='17' viewbox='0 0 17 17')
+                                path.base(fill='#000' d='M8.5,17 C3.80557963,17 0,13.1944204 0,8.5 C0,3.80557963 3.80557963,0 8.5,0 C13.1944204,0 17,3.80557963 17,8.5 C17,13.1944204 13.1944204,17 8.5,17 Z')
+                                path.glyph(fill='#FFF' d='M8.5,7.29791847 L6.12604076,4.92395924 C5.79409512,4.59201359 5.25590488,4.59201359 4.92395924,4.92395924 C4.59201359,5.25590488 4.59201359,5.79409512 4.92395924,6.12604076 L7.29791847,8.5 L4.92395924,10.8739592 C4.59201359,11.2059049 4.59201359,11.7440951 4.92395924,12.0760408 C5.25590488,12.4079864 5.79409512,12.4079864 6.12604076,12.0760408 L8.5,9.70208153 L10.8739592,12.0760408 C11.2059049,12.4079864 11.7440951,12.4079864 12.0760408,12.0760408 C12.4079864,11.7440951 12.4079864,11.2059049 12.0760408,10.8739592 L9.70208153,8.5 L12.0760408,6.12604076 C12.4079864,5.79409512 12.4079864,5.25590488 12.0760408,4.92395924 C11.7440951,4.59201359 11.2059049,4.59201359 10.8739592,4.92395924 L8.5,7.29791847 L8.5,7.29791847 Z')
+                            span.text-danger.message
+                        .modal-footer
+                            button.col.btn(type='submit') Cancel my subscription
+                            .w-100.d-sm-none
+                            button.col.btn.btn-primary(type='submit' data-dismiss='modal') No, I&apos;d like to keep my service &amp; tracking history

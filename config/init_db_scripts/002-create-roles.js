@@ -60,31 +60,3 @@ db.createRole({
     }
   ]
 });
-
-db.createRole({
-  role: "stripe-customers-handler",
-  roles: [],
-  privileges: [
-    {
-      resource: {
-        db: 'primetracking',
-        collection: 'stripe_customers'
-      },
-      actions: collection_user_actions
-    }
-  ]
-});
-
-db.createRole({
-  role: "woocommerce-customers-handler",
-  roles: [],
-  privileges: [
-    {
-      resource: {
-        db: 'primetracking',
-        collection: 'woocommerce_customers'
-      },
-      actions: collection_user_actions
-    }
-  ]
-});

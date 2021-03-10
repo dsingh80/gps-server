@@ -1,0 +1,35 @@
+#modal-activate-device.modal.fade(tabindex='-1' role='dialog' aria-hidden='true')
+    .modal-dialog(role='document')
+        .modal-content
+            .modal-header
+                h5.modal-title Activate Device
+                button.close.bg-transparent(type='button' data-dismiss='modal' aria-label='Close')
+                    span(aria-hidden='true') &times;
+            .modal-body
+                form#form-activate-device.needs-validation(target='_blank' action='')
+                    .form-group.mb-4
+                        label(for='subscription') Which unused subscription would you like to activate?
+                        select#subscription.custom-select.form-control(name='subscriptionId' aria-describedby='subscription-help' placeholder='Choose a plan you already own' required='')
+                            if subscriptionsPendingActivation && subscriptionsPendingActivation.length > 0
+                                each subscription in subscriptionsPendingActivation
+                                    option(value=subscription.id data-platform=subscription.platform)= subscription.name
+                        .valid-feedback
+                            | Looks good!
+                        .invalid-feedback
+                            | You must select a plan!
+                        small#subscription-help.form-text.text-muted
+                            | These are plans you currently have
+                            | already but have been left unactivated or without a device.
+                    .form-group
+                        label(for='imei') What is your device&apos;s IMEI?
+                        input#imei.form-control(name='imei' type='text' minlength='15' maxlength='15' pattern='[0-9]+' aria-describedby='imei-help' placeholder='IMEI' required='' autofocus='')
+                        .valid-feedback
+                            | Looks good!
+                        .invalid-feedback
+                            | For instructions on how to find your IMEI, please click here.
+                        small#imei-help.form-text.text-muted
+                            | This is a 15-digit number found on the white
+                            | sticker on the back of your GPS tracking device
+                    .error.text-danger
+                        p.message
+                    button.btn.btn-lg.btn-primary.my-3.w-100(type='submit') Activate
