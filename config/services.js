@@ -29,6 +29,12 @@ module.exports.production = {
       }
     }
   },
+  pod: {
+    host: 'https://api.podiotsuite.com/v3/',
+    username: "<pod_username>",
+    password: "<pod_password>",
+    accountId: "<pod_account_id>"
+  },
   server: {
     log_path: "/var/logs/server",
     port: "8080",       // This is the port INSIDE the docker container. It must be mapped to a local network port to receive any data
@@ -68,6 +74,12 @@ module.exports.development = {
         useFindAndModify: false
       }
     }
+  },
+  pod: {
+    host: 'https://api.podiotsuite.com/v3/',
+    username: "<pod_username>",
+    password: "<pod_password>",
+    accountId: "<pod_account_id>"
   },
   server: {
     log_path: "/var/logs/server",
