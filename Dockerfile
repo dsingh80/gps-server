@@ -1,5 +1,5 @@
 # Base Docker image for the container
-FROM node:14.15.1
+FROM node:14.15.4
 
 # Define the home directory INSIDE the container
 ENV CONTAINER_HOME_DIR=/applications
